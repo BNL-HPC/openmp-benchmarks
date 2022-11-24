@@ -1,5 +1,7 @@
-#define CATCH_CONFIG_MAIN
+#ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
+#endif
+
 #include <catch.hpp> 
 #include <cstdlib>
 #include <cstdio>
@@ -12,14 +14,7 @@
 #include <omp.h>
 
 template <typename T>
-inline void set_to_zero( T* device_array, const int N ) {
-
-  int threads_tot = N;
-  int blocksize   = 512;//704;
-  int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
-
-  /* Time target offload and init */
-  auto start = std::chrono::steady_clock::now();
+inline void set_to_zero( T* device_array, const int N, const int blocksize, const int nblocks ) {
 
   int i;
   #pragma omp target is_device_ptr ( device_array )            
@@ -28,9 +23,6 @@ inline void set_to_zero( T* device_array, const int N ) {
     //printf(" num teams = %d, num threads = %d", omp_get_num_teams(), omp_get_num_threads() );
     device_array[i] = 0.;
   }
-
-  std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
-  //std::cout << "time to init array = " << elapsed_seconds.count() << " sec" << std::endl;
 
   return;
 }    
@@ -46,6 +38,10 @@ TEST_CASE("my test") {
   const std::size_t m_offset = 0;
   const int N = 4096*64;
 
+  int threads_tot = N;
+  int blocksize   = 704;
+  int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
+
   /* Allocate array of length N on target */
   real *device_array = (real *) omp_target_alloc( N * sizeof( real ), m_default_device);
   if ( device_array == NULL ) {
@@ -53,8 +49,8 @@ TEST_CASE("my test") {
   }
 
   /* Init device array with zero */
-  BENCHMARK("OpenMP Array Init") { return set_to_zero ( device_array, N ); };
-
+  BENCHMARK("OpenMP Array Init") { return set_to_zero ( device_array, N, blocksize, nblocks ); };
+  
   /* Copy device array to host for tests */
   real *host_array = (real *) malloc( N * sizeof( real ) );
   if ( omp_target_memcpy( host_array, device_array, N * sizeof( real ),
