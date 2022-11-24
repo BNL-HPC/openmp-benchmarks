@@ -1,4 +1,5 @@
 #define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
 #include <catch.hpp> 
 #include <cstdlib>
 #include <cstdio>
@@ -29,7 +30,7 @@ inline void set_to_zero( T* device_array, const int N ) {
   }
 
   std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
-  std::cout << "time to init array = " << elapsed_seconds.count() << " sec" << std::endl;
+  //std::cout << "time to init array = " << elapsed_seconds.count() << " sec" << std::endl;
 
   return;
 }    
@@ -52,7 +53,7 @@ TEST_CASE("my test") {
   }
 
   /* Init device array with zero */
-  set_to_zero ( device_array, N );
+  BENCHMARK("OpenMP Array Init") { return set_to_zero ( device_array, N ); };
 
   /* Copy device array to host for tests */
   real *host_array = (real *) malloc( N * sizeof( real ) );
