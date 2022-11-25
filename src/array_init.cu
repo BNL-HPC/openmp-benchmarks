@@ -1,5 +1,5 @@
-#include <cuda_bench.cuh>
 #include <catch.hpp> 
+#include <cuda_bench.cuh>
 #include <iostream>
 #include <cuda.h>
 

@@ -2,13 +2,17 @@
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 #endif
 
-#include <cuda_bench.cuh>
 #include <catch.hpp>
+#include <cuda_bench.cuh>
 #include <iostream>
 #include <cuda.h>
 
 namespace cuda_bench {
 
+template double* test_wrapper <double> ( const int, const int );
+template float*  test_wrapper <float>  ( const int, const int );
+template int*    test_wrapper <int>    ( const int, const int );
+	
 template <typename T>
 __global__ void set_to_zero( T* cuda_dev_array, const int N ) {
 
