@@ -1,7 +1,8 @@
 set(test_sources
   catch_main.cpp
-  array_init.cu
   array_init.cpp
+  array_init.cu
+  cuda_bench.cu
 )
 
 add_executable(main_app main.cpp)
