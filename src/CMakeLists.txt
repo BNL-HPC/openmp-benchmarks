@@ -3,6 +3,7 @@ set(test_sources
   array_init.cpp
   array_init.cu
   cuda_bench.cu
+  openmp_bench.cpp
 )
 
 add_executable(main_app main.cpp)
