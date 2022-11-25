@@ -2,19 +2,19 @@
 #define CATCH_CONFIG_ENABLE_BENCHMARKING
 #endif
 
+#include <openmp_bench.h>
 #include <catch.hpp> 
-#include <cstdlib>
-#include <cstdio>
-#include <ctime>
 #include <iostream>
-#include <chrono>
-#include <array>
-#include <vector>
-#include <cmath>
 #include <omp.h>
 
+namespace openmp_bench {
+
+template double* set_to_zero_wrapper <double> ( const int, const int );
+template float*  set_to_zero_wrapper <float>  ( const int, const int );
+template int*    set_to_zero_wrapper <int>    ( const int, const int );
+
 template <typename T>
-inline void set_to_zero( T* device_array, const int N, const int blocksize, const int nblocks ) {
+void set_to_zero( T* device_array, const int N, const int blocksize, const int nblocks ) {
 
   int i;
   #pragma omp target is_device_ptr ( device_array )            
@@ -27,23 +27,32 @@ inline void set_to_zero( T* device_array, const int N, const int blocksize, cons
   return;
 }    
 
-TEST_CASE("my test") {
+template <>
+void set_to_zero <int> ( int* device_array, const int N, const int blocksize, const int nblocks ) {
 
-  using real = double;
-  srand(time(0));
-  std::cout << "OpenMP num devices = " << omp_get_num_devices() << std::endl;
+  int i;
+  #pragma omp target is_device_ptr ( device_array )            
+  #pragma omp teams distribute parallel for num_teams(nblocks) num_threads(blocksize) 
+  for(i = 0; i < N; i++) {
+    //printf(" num teams = %d, num threads = %d", omp_get_num_teams(), omp_get_num_threads() );
+    device_array[i] = 0;
+  }
+
+  return;
+}    
+
+template <typename T>
+T* set_to_zero_wrapper( const int N, const int blocksize ) {
 
   const int m_default_device = omp_get_default_device();
   const int m_initial_device = omp_get_initial_device();
   const std::size_t m_offset = 0;
-  const int N = 4096*64;
 
   int threads_tot = N;
-  int blocksize   = 704;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
   /* Allocate array of length N on target */
-  real *device_array = (real *) omp_target_alloc( N * sizeof( real ), m_default_device);
+  T *device_array = (T *) omp_target_alloc( N * sizeof( T ), m_default_device);
   if ( device_array == NULL ) {
     std::cout << " ERROR: No space left on device." << std::endl;
   }
@@ -52,8 +61,8 @@ TEST_CASE("my test") {
   BENCHMARK("OpenMP Array Init") { return set_to_zero ( device_array, N, blocksize, nblocks ); };
   
   /* Copy device array to host for tests */
-  real *host_array = (real *) malloc( N * sizeof( real ) );
-  if ( omp_target_memcpy( host_array, device_array, N * sizeof( real ),
+  T *host_array = (T*) malloc( N * sizeof( T ) );
+  if ( omp_target_memcpy( host_array, device_array, N * sizeof( T ),
                                   m_offset, m_offset, m_initial_device, m_default_device ) ) {
     std::cout << "ERROR: array " << std::endl;
   }
@@ -62,9 +71,10 @@ TEST_CASE("my test") {
     if ( std::fabs( host_array[i] ) > 1e-20 )
       std::cout << "!!Problem at i = " << i << std::endl;
 
+  omp_target_free( device_array, m_default_device);
+  free( host_array );
 
-
-
-  REQUIRE(14==14);
+  return device_array;
 }
 
+} // namespace openmp_bench
