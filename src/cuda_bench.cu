@@ -38,17 +38,23 @@ __host__ T* set_to_zero_wrapper ( const int N, const int blocksize ) {
   
   int threads_tot = N;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
- 
+
   //set_to_zero<<<nblocks, blocksize>>>(cuda_dev_array, N );
   BENCHMARK("CUDA Array Init") { return set_to_zero<<<nblocks, blocksize>>>( cuda_dev_array, N ); };
   
   T *cuda_host_array = (T *) malloc( N * sizeof( T ) );
   cudaMemcpy(cuda_host_array, cuda_dev_array, N * sizeof( T ), cudaMemcpyDeviceToHost);
 
-  for ( int i = 0; i < N; i++ ) 
+  bool test_flag = true;
+  for ( int i = 0; i < N; i++ ) {
        if ( std::fabs ( cuda_host_array[i] ) > 1e-20 ) 
-	  std::cout << "!!Problem at i = " << i << std::endl;
+	  //std::cout << "!!Problem at i = " << i << std::endl;
+	  test_flag = false;
+  }
   
+  //REQUIRE(test_flag == true);
+  CHECK(test_flag == true);
+
   cudaFree( cuda_dev_array );
   free( cuda_host_array);
 

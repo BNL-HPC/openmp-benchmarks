@@ -67,9 +67,16 @@ T* set_to_zero_wrapper( const int N, const int blocksize ) {
     std::cout << "ERROR: array " << std::endl;
   }
 
-  for(int i = 0; i < N; i++)
-    if ( std::fabs( host_array[i] ) > 1e-20 )
-      std::cout << "!!Problem at i = " << i << std::endl;
+  bool test_flag = true;
+  for ( int i = 0; i < N; i++ ) {
+       if ( std::fabs ( host_array[i] ) > 1e-20 ) 
+	  //std::cout << "!!Problem at i = " << i << std::endl;
+	  test_flag = false;
+  }
+  
+  //REQUIRE(test_flag == true);
+  CHECK(test_flag == true);
+
 
   omp_target_free( device_array, m_default_device);
   free( host_array );
