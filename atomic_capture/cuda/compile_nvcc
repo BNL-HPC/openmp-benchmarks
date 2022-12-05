@@ -1,0 +1,1 @@
+nvcc -O3 atomic_cu.cu -Xcompiler -fopenmp -lgomp -arch=sm_86 -o run_cuda

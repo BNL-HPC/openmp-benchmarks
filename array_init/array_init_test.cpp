@@ -5,7 +5,6 @@
 #include <openmp_bench.h>
 #include <catch.hpp> 
 #include <iostream>
-#include <omp.h>
 
 namespace openmp_bench {
 

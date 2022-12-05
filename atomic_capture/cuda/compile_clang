@@ -1,0 +1,1 @@
+clang++ -O3 atomic_cu.cu -o run_cuda --cuda-gpu-arch=sm_86 -L/usr/local/cuda/lib64 -lcudart_static -ldl -lrt -pthread -fopenmp
