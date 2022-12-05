@@ -1,17 +1,27 @@
+#ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
+#define CATCH_CONFIG_ENABLE_BENCHMARKING
+#endif
+
 #include <cstdlib> 
-#include <cstdio>
 #include <ctime> 
 #include <iostream>
-#include <chrono>
-#include <array>
 #include <cuda.h>
+#include <cuda_bench.cuh>
+#include <catch.hpp>
 
+namespace cuda_bench {
+
+template double* atomic_capture_wrapper <double> ( const int, const int );
+template float*  atomic_capture_wrapper <float>  ( const int, const int );
+template int*    atomic_capture_wrapper <int>    ( const int, const int );
+	
 template <typename T>
 __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, const int N ) {
 
+  //TODO no instance of atomicAdd defined with std::size_t as first arg
   unsigned long tid = threadIdx.x + blockIdx.x * blockDim.x;
 
-  if ( tid < N ) { cuda_dev_array_pos[tid] = 0.0; }
+  //if ( tid < N ) { cuda_dev_array_pos[tid] = 0.0; }
   if ( tid == 0) ct[0] = 0;
 
   if ( tid < N ) {
@@ -23,73 +33,86 @@ __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, 
   }
 }
 
-int main(int argc, char *argv[]){
+template <typename T>
+__host__ void host_array_initialize ( T* host_array, const int N ) {
 
-  using real = double;	
   srand(time(0));
-  const int N = 4096*512; 
-  
-  real *host_array = (real *) malloc( N * sizeof( real ) );
- 
   for(int i = 0; i < N; i++){
-    host_array[i] = 2*drand48() - 1.0;
+    host_array[i] = (T)(2*drand48() - 1.0);
   } 
 
-//  std::cout << "Random array:" << std::endl;
-//  for ( int i = 0; i < N; i++) std::cout << i << " -> " << host_array[i] << std::endl;
-//  std::cout << std::endl;
-
-  for ( int loop = 0; loop < 1; loop++) {
-  
-  /********** CPU Serial **********/
-  real *cpu_array_ser_pos = (real *) malloc( N * sizeof( real ) );
-
-  auto start1  = std::chrono::steady_clock::now();
-  int cpu_ser_count = 0;
-  for ( int i = 0; i < N; i++ ) {
-      if ( host_array[i] > 0. ) {
-        cpu_array_ser_pos[cpu_ser_count] = host_array[i];
-        cpu_ser_count++;
-      }
-  }
-  std::chrono::duration<double> elapsed_seconds1 = std::chrono::steady_clock::now() - start1;
-  std::cout << "CPU Serial -- number of pos rand = " << cpu_ser_count << " in " << elapsed_seconds1.count() <<"s" << std::endl;
-  ////for ( int i = 0; i < cpu_ser_count; i++ ) std::cout << cpu_array_ser_pos[i] << "\n" ;
-  //std::cout << std::endl;
-  /*******************************/
-
-  }  
-
-  /************ CUDA *************/
-  int blocksize   = 256;
-  int threads_tot = N;
-  int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
-  std::cout << "CUDA num blocks = " << nblocks << std::endl;
-
-  real* cuda_dev_array;
-  cudaMalloc((void**)&cuda_dev_array, sizeof(real) * N);
-  cudaMemcpy(cuda_dev_array, host_array, sizeof(real) * N, cudaMemcpyHostToDevice);
-
-  real* cuda_dev_array_pos;
-  cudaMalloc((void**)&cuda_dev_array_pos, sizeof(real) * N);
-  
-  int* ct;
-  cudaMalloc( (void**)&ct, sizeof( int ) );
-	  
-  collect_pos<<<nblocks, blocksize>>>( cuda_dev_array, cuda_dev_array_pos, ct, N );
-
-  int ct_host = 0;
-  cudaMemcpy(&ct_host, ct, sizeof( int ), cudaMemcpyDeviceToHost);
-
-  real* cuda_host_array_pos;
-  cuda_host_array_pos = (real *) malloc( ct_host * sizeof( real ) );
-  cudaMemcpy(cuda_host_array_pos, cuda_dev_array_pos, ct_host * sizeof( real ), cudaMemcpyDeviceToHost);
-
-  std::cout << "CUDA ct host = " << ct_host << std::endl;
-//  for ( int i = 0; i < ct_host; i++ ) std::cout << cuda_host_array_pos[i] << std::endl;
-
-  /*******************************/
-
-  return 0; 
+  return;
 }
 
+template <>
+__host__ void host_array_initialize <int> ( int* host_array, const int N ) {
+
+  srand(time(0));
+  for(int i = 0; i < N; i++){
+    host_array[i] = rand() % RAND_MAX;
+  } 
+
+  return;
+}
+
+template <typename T>
+__host__ int collect_positive_serial_host ( T* host_array, T* host_array_positive, const int N ) {
+
+  int host_ser_count = 0;
+
+  for ( int i = 0; i < N; i++ ) {
+      if ( host_array[i] > 0. ) {
+        host_array_positive[host_ser_count] = host_array[i];
+        host_ser_count++;
+      }
+  }
+
+  return host_ser_count;	  
+}
+
+
+template <typename T>
+__host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
+
+  int threads_tot = N;
+  int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
+
+  T *host_array          = (T *) malloc( N * sizeof( T ) );
+  T *host_array_positive = (T *) malloc( N * sizeof( T ) );
+ 
+  host_array_initialize ( host_array, N);
+  int host_count = collect_positive_serial_host ( host_array, host_array_positive, N );
+
+  T* cuda_dev_array;
+  T* cuda_dev_array_pos;
+  int* devc_count;
+  cudaMalloc( (void**) &cuda_dev_array, sizeof(T) * N);
+  cudaMalloc( (void**) &cuda_dev_array_pos, sizeof(T) * N);
+  cudaMalloc( (void**) &devc_count, sizeof( int ) );
+  cudaMemcpy(cuda_dev_array, host_array, sizeof(T) * N, cudaMemcpyHostToDevice);
+	  
+  //collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N );
+  BENCHMARK("CUDA Atomic Capture") { return collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N ); };
+
+  int host_copy_count = 0;
+  cudaMemcpy( &host_copy_count, devc_count, sizeof( int ), cudaMemcpyDeviceToHost);
+
+  T* host_copy_array;
+  host_copy_array = (T *) malloc( host_copy_count * sizeof( T ) );
+  cudaMemcpy(host_copy_array, cuda_dev_array_pos, host_copy_count * sizeof( T ), cudaMemcpyDeviceToHost);
+
+  CHECK( host_copy_count == host_count );
+
+  /* * * check GPU array parallel with CPU array serial * * */
+  T sum = 0.;
+  for ( int i = 0; i < host_copy_count; i++ ) {
+    //std::cout << i << " " << host_copy_array[i] << " " << host_array_positive[i] << std::endl;  
+    sum += host_copy_array[i] - host_array_positive[i];
+  }
+
+  CHECK( std::fabs ( (float)sum ) < 0.0001f );
+
+  return host_array; 
+}
+
+} //namespace cuda_bench

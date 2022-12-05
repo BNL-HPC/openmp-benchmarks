@@ -1,11 +1,11 @@
-#set(cuda_sources
-#  ../src/catch_main.cpp
-#  array_init_test.cu
-#  array_init.cu
-#)
+set(atomic_capture_cuda_sources
+  ../src/catch_main.cpp
+  atomic_capture.cu
+  atomic_capture_test.cu
+)
 
-#add_executable(cuda_app ${cuda_sources})
-#target_include_directories(cuda_app PUBLIC ../include)
+add_executable(atomic_capture_cuda_app ${atomic_capture_cuda_sources})
+target_include_directories(atomic_capture_cuda_app PUBLIC ../include)
 
 set(atomic_capture_omp_sources
   ../src/catch_main.cpp

@@ -20,11 +20,23 @@ void host_array_initialize ( T* host_array, const std::size_t N ) {
 
   srand(time(0));
   for(std::size_t i = 0; i < N; i++){
-    host_array[i] = 2*drand48() - 1.0;
+    host_array[i] = (T)(2*drand48() - 1.0);
   } 
 
   return; 
 }
+
+template <>
+void host_array_initialize <int> ( int* host_array, const std::size_t N ) {
+
+  srand(time(0));
+  for(std::size_t i = 0; i < N; i++){
+    host_array[i] = rand() % RAND_MAX;
+  } 
+
+  return; 
+}
+
 
 template <typename T>
 void collect_positive_devc ( T* devc_array, T* devc_array_positive, std::size_t* devc_count, const std::size_t N, 
