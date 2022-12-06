@@ -1,1 +1,0 @@
-nvc++ -O3 atomic.cpp -mp=gpu -cuda -gpu=cc86 -Minfo=mp -o run_atomic

@@ -1,1 +1,0 @@
-clang++ -O3 -fopenmp -fopenmp-targets=nvptx64-nvidia -Xopenmp-target -march=sm_86 -I/usr/local/cuda/include  -L/usr/local/cuda/lib64 -lcudart -ldl -lrt -pthread -lcublas atomic.cpp -o run_atomic

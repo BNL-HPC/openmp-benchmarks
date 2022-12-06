@@ -21,4 +21,5 @@ include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(array_init)
+add_subdirectory(atomic_update)
 add_subdirectory(atomic_capture)
