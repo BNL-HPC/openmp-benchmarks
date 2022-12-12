@@ -91,16 +91,5 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
 
 }
 
-TEST_CASE("CUDA Atomic Capture") {
- 
-  using T = float;
-
-  const int N   = 4096;
-  const int blocksize = 512;
-  float* temp1 = atomic_update_wrapper <float> ( N, blocksize );  
-
-
-}
-
 
 } //namespace cuda_bench

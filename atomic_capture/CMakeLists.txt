@@ -15,3 +15,4 @@ set(atomic_capture_omp_sources
 
 add_executable(atomic_capture_omp_app ${atomic_capture_omp_sources})
 target_include_directories(atomic_capture_omp_app PUBLIC ../include)
+set_target_properties(atomic_capture_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")

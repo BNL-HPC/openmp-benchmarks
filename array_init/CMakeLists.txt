@@ -15,3 +15,4 @@ set(array_init_omp_sources
 
 add_executable(array_init_omp_app ${array_init_omp_sources})
 target_include_directories(array_init_omp_app PUBLIC ../include)
+set_target_properties(array_init_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
