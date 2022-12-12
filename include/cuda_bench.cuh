@@ -24,6 +24,10 @@ __host__ int collect_positive_serial_host ( T* host_array, T* host_array_positiv
 template <typename T>
 __host__ T* atomic_capture_wrapper ( const int N, const int blocksize);
 
+template <typename T>
+__host__ T* atomic_update_wrapper ( const int N, const int blocksize);
+
+
 
 
 } // namespace cuda_bench

@@ -23,6 +23,9 @@ std::size_t collect_positive_serial_host ( T* host_array, T* host_array_positive
 template <typename T>
 T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize );
 
+template <typename T>
+T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize );
+
 
 
 
