@@ -15,6 +15,10 @@ cmake --build build --parallel 8
 lambda2
 ========
 
+module load nvhpc/22.9
+export PATH=/work/software/wc/llvm-16-test/bin/:$PATH
+export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
+
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 -mtune=native" -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_PREFIX_PATH=""
 
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8

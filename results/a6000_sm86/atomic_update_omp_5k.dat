@@ -1,0 +1,284 @@
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+atomic_update_omp_app is a Catch v2.13.10 host application.
+Run with -? for options
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^12, 128
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:11
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1    207.745 ms 
+                                        40.3113 us    40.1826 us    40.4529 us 
+                                        4.86969 us    4.56389 us    5.18281 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     204.25 ms 
+                                         39.991 us    39.9173 us     40.074 us 
+                                        2.82864 us    2.56337 us    3.12252 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     143.81 ms 
+                                        29.0005 us    28.9582 us    29.0494 us 
+                                         1.6428 us    1.46446 us    2.05345 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^12, 256
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:20
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     191.59 ms 
+                                         39.948 us    39.7643 us    40.1457 us 
+                                        6.91363 us    6.60162 us    7.23618 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     195.37 ms 
+                                        39.4496 us     39.315 us    39.5966 us 
+                                        5.06344 us    4.76592 us    5.37176 us 
+                                                                               
+OpenMP Atomic Update                          5000             1    149.555 ms 
+                                        29.7409 us    29.6882 us     29.795 us 
+                                        1.92585 us    1.86267 us    2.07797 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^12, 512
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:29
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     205.89 ms 
+                                        45.5806 us    45.1325 us    46.0445 us 
+                                        16.4755 us    15.8942 us    17.0553 us 
+                                                                               
+OpenMP Atomic Update                          5000             1    214.385 ms 
+                                        40.5795 us    40.4517 us    40.7221 us 
+                                         4.8801 us    4.56677 us     5.2054 us 
+                                                                               
+OpenMP Atomic Update                          5000             1    150.205 ms 
+                                        31.0687 us    30.9662 us    31.1753 us 
+                                        3.76748 us    3.62993 us    3.94498 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^12, 768
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:38
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     207.04 ms 
+                                         38.555 us     38.444 us    38.6787 us 
+                                        4.20174 us    3.90703 us    4.51429 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     190.18 ms 
+                                        39.7069 us    39.5314 us    39.8951 us 
+                                        6.51038 us    6.15691 us    6.91271 us 
+                                                                               
+OpenMP Atomic Update                          5000             1      148.2 ms 
+                                        29.6578 us    29.5844 us     29.736 us 
+                                        2.73397 us    2.59336 us    2.92768 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^18, 128
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:51
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.63865 s 
+                                        507.722 us    506.639 us    510.608 us 
+                                        56.9232 us    10.4868 us    112.461 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.59899 s 
+                                        502.954 us    502.654 us    503.469 us 
+                                        13.8022 us    9.60876 us    25.5401 us 
+                                                                               
+OpenMP Atomic Update                          5000             1    195.805 ms 
+                                        39.2551 us    39.1865 us    39.3366 us 
+                                        2.69776 us    2.35687 us    3.38008 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^18, 256
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:60
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.52404 s 
+                                        507.584 us    506.576 us    510.261 us 
+                                        52.4773 us    8.34288 us    101.889 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.64466 s 
+                                        509.553 us    509.408 us    509.717 us 
+                                        5.57541 us    4.95695 us    6.73203 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     196.94 ms 
+                                        39.4923 us    39.4416 us    39.5466 us 
+                                        1.89743 us    1.70774 us    2.20727 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^18, 512
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:69
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.64803 s 
+                                        512.129 us    510.922 us    515.204 us 
+                                        61.3461 us    5.80844 us    114.498 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.59047 s 
+                                        512.379 us    512.173 us    512.687 us 
+                                         8.9631 us    6.66271 us    14.9651 us 
+                                                                               
+OpenMP Atomic Update                          5000             1    198.195 ms 
+                                        39.5597 us    39.5034 us    39.6206 us 
+                                        2.11318 us    1.94485 us    2.41311 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^18, 768
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:78
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.64858 s 
+                                        501.282 us    501.118 us    501.487 us 
+                                        6.57862 us    5.62487 us    9.12838 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.61631 s 
+                                        511.779 us    511.617 us    511.954 us 
+                                        6.06461 us     5.6531 us    6.73991 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     198.74 ms 
+                                        39.2242 us    39.1649 us    39.2882 us 
+                                        2.21806 us    2.01065 us    2.60706 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^24, 128
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:91
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.46635 m 
+                                        28.5321 ms    28.5257 ms    28.5384 ms 
+                                        228.141 us     224.64 us     231.71 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.46104 m 
+                                          28.55 ms    28.5437 ms    28.5562 ms 
+                                        225.184 us    221.764 us    228.627 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.37287 s 
+                                        472.048 us    470.875 us     475.05 us 
+                                        60.1858 us    8.10705 us     112.99 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^24, 256
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:100
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.46689 m 
+                                        28.5524 ms    28.5462 ms    28.5584 ms 
+                                        219.991 us    216.604 us    223.366 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.37385 m 
+                                        28.5556 ms    28.5495 ms    28.5616 ms 
+                                        217.401 us     213.94 us    220.873 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     1.96589 s 
+                                        376.437 us    375.703 us    379.259 us 
+                                        45.3296 us    10.7411 us    106.913 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^24, 512
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:109
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.47296 m 
+                                        28.5755 ms    28.5697 ms    28.5813 ms 
+                                        210.376 us    206.569 us     215.35 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.43546 m 
+                                        28.5449 ms    28.5384 ms    28.5514 ms 
+                                        233.255 us    226.497 us    256.507 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     1.86742 s 
+                                        374.418 us    373.162 us    377.656 us 
+                                        63.8955 us    5.92243 us    120.701 us 
+                                                                               
+
+-------------------------------------------------------------------------------
+OpenMP Atomic Update, 2^24, 768
+-------------------------------------------------------------------------------
+/work/atif/openmp-benchmarks/atomic_update/atomic_update_test.cpp:118
+...............................................................................
+
+benchmark name                       samples       iterations    estimated
+                                     mean          low mean      high mean
+                                     std dev       low std dev   high std dev
+-------------------------------------------------------------------------------
+OpenMP Atomic Update                          5000             1     2.40941 m 
+                                        28.4677 ms    28.4606 ms    28.4747 ms 
+                                        252.372 us    249.625 us      255.4 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     2.46357 m 
+                                        28.3835 ms     28.376 ms    28.3911 ms 
+                                         271.55 us     266.17 us    289.915 us 
+                                                                               
+OpenMP Atomic Update                          5000             1     1.87719 s 
+                                        375.172 us    374.533 us    378.124 us 
+                                        42.3679 us    4.94748 us    103.119 us 
+                                                                               
+
+===============================================================================
+All tests passed (36 assertions in 12 test cases)
+
