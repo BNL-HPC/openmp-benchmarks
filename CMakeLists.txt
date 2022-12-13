@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.25)
 
 project(OpenMP-target-offload-benchmarks VERSION 0.0.1 LANGUAGES CXX CUDA)
 
@@ -15,7 +15,7 @@ if(OPENMP_FOUND)
   #set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -maxrregcount=64")
   #set(OpenMP_OPT_RMRKS "-Rpass=openmp-opt -Rpass-analysis=openmp-opt -Rpass-missed=openmp-opt " )
   #set(OpenMP_DBG_FLAGS "-fopenmp-target-debug=0x5" )
-  set(OpenMP_FLAGS "-fopenmp --offload-arch=sm_86 --cuda-gpu-arch=sm_86") ##lambda2
+  set(OpenMP_FLAGS "-fopenmp --offload-arch=sm_80 ") 
   #set(OpenMP_FLAGS "-fopenmp --offload-arch=gfx906") ##lambda3
   ##set(OpenMP_FLAGS "-mp=gpu -gpu=cc86 -cuda -Minfo=mp") ## for nvc++
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_FLAGS} ${OpenMP_OPT_FLAGS} ${OpenMP_OPT_RMRKS}")
