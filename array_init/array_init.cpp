@@ -58,12 +58,12 @@ T* set_to_zero_wrapper( const int N, const int blocksize ) {
     std::cout << " ERROR: No space left on device." << std::endl;
   }
 
-  //auto start = std::chrono::steady_clock::now() ;
-  auto start_omp = omp_get_wtime() ;
-  set_to_zero ( device_array, N, blocksize, nblocks );
-  //std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
-  //std::cout << "chrono time " << elapsed_seconds.count() << std::endl;
-  std::cout << "chrono time " << omp_get_wtime() - start_omp << std::endl;
+//  //auto start = std::chrono::steady_clock::now() ;
+//  auto start_omp = omp_get_wtime() ;
+//  set_to_zero ( device_array, N, blocksize, nblocks );
+//  //std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
+//  //std::cout << "chrono time " << elapsed_seconds.count() << std::endl;
+//  std::cout << "chrono time " << omp_get_wtime() - start_omp << std::endl;
 
 
   /* Init device array with zero */

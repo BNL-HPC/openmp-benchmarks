@@ -5,6 +5,7 @@
 #include <catch.hpp>
 #include <cuda_bench.cuh>
 #include <iostream>
+#include <cstdlib>
 #include <cuda.h>
 
 namespace cuda_bench {
@@ -32,10 +33,19 @@ __global__ void set_to_zero <int> ( int* cuda_dev_array, const int N ) {
 template <typename T>
 __host__ T* set_to_zero_wrapper ( const int N, const int blocksize ) {
 
+  T *data = (T *) malloc( N * sizeof( T ) );
+  for(int i=0; i<N; i++)
+  {
+    data[i] = drand48();
+  }
+
   /* Allocate an array of length N */
   T* cuda_dev_array; 
   cudaMalloc((void**)&cuda_dev_array, sizeof( T ) * N);
   
+  cudaMemcpy(cuda_dev_array, data, N * sizeof( T ), cudaMemcpyHostToDevice);
+
+
   int threads_tot = N;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
