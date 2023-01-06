@@ -26,6 +26,9 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize );
 template <typename T>
 T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize );
 
+template <typename T>
+T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize );
+
 
 
 

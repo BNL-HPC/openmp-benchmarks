@@ -24,3 +24,7 @@ export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8
 
 ./build/src/cuda_app --benchmark-samples 1000
+
+
+export LD_LIBRARY_PATH=/work/atif/packages/spack/opt/spack/linux-ubuntu20.04-zen2/gcc-9.3.0/gcc-12.2.0-qhtr62i46cvhlmyjtkawlijkkuc6cybu/lib64/:$LD_LIBRARY_PATH
+export PATH=/work/atif/packages/spack/opt/spack/linux-ubuntu20.04-zen2/gcc-9.3.0/gcc-12.2.0-qhtr62i46cvhlmyjtkawlijkkuc6cybu/bin/:$PATH
