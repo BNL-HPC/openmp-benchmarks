@@ -27,6 +27,9 @@ __host__ T* atomic_capture_wrapper ( const int N, const int blocksize);
 template <typename T>
 __host__ T* atomic_update_wrapper ( const int N, const int blocksize);
 
+template <typename T>
+__host__ T* saxpy_wrapper ( const int N, const int blocksize);
+
 
 
 

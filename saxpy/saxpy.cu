@@ -11,17 +11,10 @@
 
 namespace cuda_bench {
 
-template double* atomic_update_wrapper <double> ( const int, const int );
-template float*  atomic_update_wrapper <float>  ( const int, const int );
-template int*    atomic_update_wrapper <int>    ( const int, const int );
+template double* saxpy_wrapper <double> ( const int, const int );
+template float*  saxpy_wrapper <float>  ( const int, const int );
+template int*    saxpy_wrapper <int>    ( const int, const int );
 	
-template <typename T> 
-T get_epsilon () { return 1.0e-6; }
-
-template <> double get_epsilon <double> () { return 1.0e-6; }
-template <> float  get_epsilon <float>  () { return 1.0e-2; }
-template <> int    get_epsilon <int>    () { return 0; }
-
 template <typename T>
 T initialize_random ( T epsilon ) {
 
@@ -38,56 +31,55 @@ T initialize_random ( T epsilon ) {
 }
 
 template<typename T>
-__global__ void get_residual ( T* res, T* data, const int size ) {
+__global__ void saxpy_kernel ( T* result_dev, T* data_x_dev, T* data_y_dev, const T fact, const int size ) {
 
   int i = blockIdx.x * blockDim.x + threadIdx.x;
   
-  if ( i == 0 ) res[i] = 0.;
-
   if(i < size) {
-    atomicAdd( res, data[i]);
+    result_dev[i] = data_y_dev[i] + fact * data_x_dev[i];
   }
 }
 
 template<typename T>
-__host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
+__host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
 
   int threads_tot = N;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  T epsilon = get_epsilon <T> ();
+  T epsilon = 1.e-6;
 
-  T* data = (T*)malloc(sizeof(T) * N);
+  T* data_x = (T*)malloc(sizeof(T) * N);
+  T* data_y = (T*)malloc(sizeof(T) * N);
 
+  const T fact = initialize_random ( epsilon );
   for(int i=0; i<N; i++)
   {
-    data[i] = initialize_random ( epsilon );
+    data_x[i] = initialize_random ( epsilon );
+    data_y[i] = initialize_random ( epsilon );
   }
 
-  T res = 0.0;
-  for(int i=0; i<N; i++)
-    res += data[i];
-  res = (double) res / (double) N;
+  T* data_x_dev;
+  T* data_y_dev;
+  T* result_dev;
+  cudaMalloc((void**)&data_x_dev, sizeof(T) * N);
+  cudaMalloc((void**)&data_y_dev, sizeof(T) * N);
+  cudaMalloc((void**)&result_dev, sizeof(T) * N);
 
-  T* data_d;
-  cudaMalloc((void**)&data_d, sizeof(T) * N);
-  cudaMemcpy(data_d, data, sizeof(T) * N, cudaMemcpyHostToDevice);
-
-  T* res_d;
-  cudaMalloc((void**)&res_d, sizeof(T) );
+  cudaMemcpy(data_x_dev, data_x, sizeof(T) * N, cudaMemcpyHostToDevice);
+  cudaMemcpy(data_y_dev, data_y, sizeof(T) * N, cudaMemcpyHostToDevice);
   
   //get_residual<<<nblocks,blocksize>>> ( res_d, data_d, N );  
-  BENCHMARK("CUDA") { return get_residual<<<nblocks, blocksize>>> ( res_d, data_d, N ); };
+  BENCHMARK("CUDA") { return saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); };
   cudaDeviceSynchronize() ;
  
-  T res_h = 0.0;
-  cudaMemcpy(&res_h, res_d, sizeof(T), cudaMemcpyDeviceToHost);
-  res_h = (double) res_h / (double) N;
+  T* result_host = (T*)malloc(sizeof(T) * N);
+  cudaMemcpy(result_host, result_dev, sizeof(T) * N, cudaMemcpyDeviceToHost);
 
-  CHECK ( std::fabs(  res_h - res ) <= epsilon );
-//  std::cout << res_h << " " << res << std::endl;
+  for(int i = 0; i < N; i++) {
+    CHECK ( std::fabs(  result_host[i] - ( data_y[i] + fact * data_x[i]  ) ) <= epsilon );
+  }
 
-  return data;
+  return data_x;
 
 }
 
