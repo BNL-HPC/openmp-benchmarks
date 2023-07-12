@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.20)
 
 project(OpenMP-target-offload-benchmarks VERSION 0.0.1 LANGUAGES CXX CUDA)
 
@@ -11,11 +11,11 @@ if(OPENMP_FOUND)
   set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -fopenmp-cuda-mode")
   set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -foffload-lto")
   set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -fopenmp-assume-no-thread-state")
-  set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -fopenmp-assume-no-nested-parallelism")
+  #set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -fopenmp-assume-no-nested-parallelism")
   #set(OpenMP_OPT_FLAGS "${OpenMP_OPT_FLAGS} -maxrregcount=64")
   set(OpenMP_OPT_RMRKS "-Rpass=openmp-opt -Rpass-analysis=openmp-opt -Rpass-missed=openmp-opt " )
   #set(OpenMP_DBG_FLAGS "-fopenmp-target-debug=0x5" )
-  set(OpenMP_FLAGS "-fopenmp --offload-arch=sm_86 ") 
+  set(OpenMP_FLAGS "-fopenmp --offload-arch=sm_80 ") 
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_FLAGS} ${OpenMP_OPT_FLAGS} ${OpenMP_OPT_RMRKS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_FLAGS} ${OpenMP_OPT_FLAGS} ${OpenMP_OPT_RMRKS}")
 else()
@@ -23,6 +23,7 @@ else()
 endif()
 
 find_package(CUDA REQUIRED)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include_directories(include)
 

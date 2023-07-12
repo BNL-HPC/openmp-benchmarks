@@ -6,6 +6,7 @@ set(array_init_cuda_sources
 
 add_executable(array_init_cuda_app ${array_init_cuda_sources})
 target_include_directories(array_init_cuda_app PUBLIC ../include)
+set_target_properties(array_init_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
 
 set(array_init_omp_sources
   ../src/catch_main.cpp
@@ -15,4 +16,3 @@ set(array_init_omp_sources
 
 add_executable(array_init_omp_app ${array_init_omp_sources})
 target_include_directories(array_init_omp_app PUBLIC ../include)
-set_target_properties(array_init_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
