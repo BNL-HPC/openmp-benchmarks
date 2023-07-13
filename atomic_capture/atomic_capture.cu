@@ -6,6 +6,7 @@
 #include <ctime> 
 #include <iostream>
 #include <cuda.h>
+#include <cuda_runtime.h>
 #include <cuda_bench.cuh>
 #include <catch.hpp>
 

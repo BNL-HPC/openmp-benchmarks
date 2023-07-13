@@ -3,10 +3,11 @@
 #endif
 
 #include <catch.hpp>
+#include <cuda.h>
+#include <cuda_runtime.h>
 #include <cuda_bench.cuh>
 #include <iostream>
 #include <cstdlib>
-#include <cuda.h>
 
 namespace cuda_bench {
 

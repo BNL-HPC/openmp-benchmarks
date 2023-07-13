@@ -5,7 +5,8 @@
 #include<cstdlib>
 #include<iostream>
 #include<ctime>
-#include<cuda.h>
+#include <cuda.h>
+#include<cuda_runtime.h>
 #include<cuda_bench.cuh>
 #include<catch.hpp>
 

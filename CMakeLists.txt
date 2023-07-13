@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(OpenMP-target-offload-benchmarks VERSION 0.0.1 LANGUAGES CXX CUDA)
+project(OpenMP-target-offload-benchmarks VERSION 0.0.1 LANGUAGES CXX)
+
+include(CheckLanguage)
+check_language(CUDA)
+if(CMAKE_CUDA_COMPILER)
+    enable_language(CUDA)
+    add_definitions(-DUSE_CUDA)
+    include_directories("${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}")
+endif()
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CUDA_STANDARD 14)
@@ -22,7 +30,6 @@ else()
   message(WARNING "Configuring without OpenMP!")
 endif()
 
-find_package(CUDA REQUIRED)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 include_directories(include)
