@@ -23,7 +23,7 @@ __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, 
   unsigned long tid = threadIdx.x + blockIdx.x * blockDim.x;
 
   //if ( tid < N ) { cuda_dev_array_pos[tid] = 0.0; }
-  if ( tid == 0) ct[0] = 0;
+  //if ( tid == 0) ct[0] = 0;
 
   if ( tid < N ) {
     if ( cuda_dev_array[tid] > 0 ) {
@@ -93,8 +93,16 @@ __host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
   cudaMemcpy(cuda_dev_array, host_array, sizeof(T) * N, cudaMemcpyHostToDevice);
 	  
   //collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N );
-  BENCHMARK("CUDA Atomic Capture") { return collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N ); };
+  //BENCHMARK("CUDA Atomic Capture") { return collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N ); };
 
+  BENCHMARK_ADVANCED("CUDA Atomic Capture")(Catch::Benchmark::Chronometer meter) {
+    cudaMemset(devc_count, 0, sizeof( int ) );
+    cudaMemset(cuda_dev_array_pos, 0, sizeof(T) * N );
+    meter.measure([cuda_dev_array, cuda_dev_array_pos, devc_count, N, nblocks, blocksize] 
+    { return collect_pos <<<nblocks, blocksize>>> ( cuda_dev_array, cuda_dev_array_pos, devc_count, N ); });
+    cudaDeviceSynchronize() ;
+  };
+ 
   int host_copy_count = 0;
   cudaMemcpy( &host_copy_count, devc_count, sizeof( int ), cudaMemcpyDeviceToHost);
 

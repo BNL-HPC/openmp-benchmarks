@@ -2,13 +2,13 @@
 #ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
 #endif
 
-#include<cstdlib>
-#include<iostream>
-#include<ctime>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 #include <cuda.h>
-#include<cuda_runtime.h>
-#include<cuda_bench.cuh>
-#include<catch.hpp>
+#include <cuda_runtime.h>
+#include <cuda_bench.cuh>
+#include <catch.hpp>
 
 namespace cuda_bench {
 
@@ -78,8 +78,14 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
   cudaMalloc((void**)&res_d, sizeof(T) );
   
   //get_residual<<<nblocks,blocksize>>> ( res_d, data_d, N );  
-  BENCHMARK("CUDA") { return get_residual<<<nblocks, blocksize>>> ( res_d, data_d, N ); };
-  cudaDeviceSynchronize() ;
+  //BENCHMARK("CUDA") { return get_residual<<<nblocks, blocksize>>> ( res_d, data_d, N ); };
+ 
+  BENCHMARK_ADVANCED("CUDA Atomic Update")(Catch::Benchmark::Chronometer meter) {
+    cudaMemset( res_d, 0, sizeof(T) );
+    meter.measure([res_d, data_d, N, nblocks, blocksize] 
+    { return get_residual<<<nblocks, blocksize>>> ( res_d, data_d, N ); });
+    cudaDeviceSynchronize() ;
+  };
  
   T res_h = 0.0;
   cudaMemcpy(&res_h, res_d, sizeof(T), cudaMemcpyDeviceToHost);
