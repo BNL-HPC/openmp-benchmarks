@@ -2,12 +2,12 @@
 #ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
 #endif
 
-#include<iostream>
-#include<cstdlib>
-#include<cmath>
-#include<catch.hpp>
-#include<openmp_bench.h>
-#include<omp.h>
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <catch.hpp>
+#include <openmp_bench.h>
+#include <omp.h>
 
 namespace openmp_bench {
 
@@ -40,8 +40,9 @@ T initialize_random ( T epsilon ) {
 template <typename T>
 void get_residual ( T* data_device, T* res_device, const int N, const int nblocks, const int blocksize ) {
 
-  #pragma omp target is_device_ptr(res_device)
-    res_device[0] = 0.;
+  // This is not required here anymore; being done in BENCHMARK_ADVANCED	
+  // #pragma omp target is_device_ptr(res_device)
+  //   res_device[0] = 0.;
 
   #pragma omp target is_device_ptr(res_device, data_device)
   #pragma omp teams distribute parallel for num_teams(nblocks) num_threads(blocksize)
@@ -88,8 +89,15 @@ T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize ) {
        std::cout << "ERROR: copy random numbers from cpu to gpu " << std::endl;
   }
 
-  BENCHMARK ("OpenMP Atomic Update") { return get_residual ( data_device, res_device, N, nblocks, blocksize); };
+  //BENCHMARK ("OpenMP Atomic Update") { return get_residual ( data_device, res_device, N, nblocks, blocksize); };
 
+  BENCHMARK_ADVANCED("OpenMP Atomic Update")(Catch::Benchmark::Chronometer meter) {
+    #pragma omp target is_device_ptr ( res_device )
+      res_device[0] = 0;
+    meter.measure([data_device, res_device, N, nblocks, blocksize] 
+    { return get_residual ( data_device, res_device, N, nblocks, blocksize); });
+  };
+ 
   T host_copy_res = 0.;
   if ( omp_target_memcpy( &host_copy_res, res_device, sizeof( T ),
         		  m_offset, m_offset, m_initial_device, m_default_device ) ) {

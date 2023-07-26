@@ -45,8 +45,8 @@ void collect_positive_devc ( T* devc_array, T* devc_array_positive, std::size_t*
   //TODO: Use BENCHMARK_ADVANCED to set to 0 outside the benchmarck
   //Order of positive rands in the output array not preserved
 
-  #pragma omp target is_device_ptr ( devc_count )
-  devc_count[0] = 0;
+  //#pragma omp target is_device_ptr ( devc_count )
+  //devc_count[0] = 0;
  
   #pragma omp target is_device_ptr ( devc_count, devc_array, devc_array_positive ) device(m_default_device)
   #pragma omp teams distribute parallel for num_teams(nblocks) num_threads(blocksize)
@@ -112,15 +112,19 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   }
 
   //collect_positive_devc ( devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device );
-  BENCHMARK("OpenMP Atomic Capture") { return collect_positive_devc ( devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device ); };
+  //BENCHMARK("OpenMP Atomic Capture") { return collect_positive_devc ( devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device ); };
 
-//  BENCHMARK_ADVANCED("advanced")(Catch::Benchmark::Chronometer meter) {
-//    #pragma omp target is_device_ptr ( devc_count )
-//    devc_count[0] = 0;
-//    meter.measure([devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device] 
-//    { return collect_positive_devc ( devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device ); });
-//  };
-  
+  BENCHMARK_ADVANCED("OpenMP Atomic Capture")(Catch::Benchmark::Chronometer meter) {
+    #pragma omp target is_device_ptr ( devc_count )
+      devc_count[0] = 0;
+    #pragma omp target is_device_ptr ( devc_array_positive ) device(m_default_device)
+    #pragma omp teams distribute parallel for 
+    for ( std::size_t i = 0; i < N; i++ ) {
+  	devc_array_positive[i] = 0; 
+    }
+    meter.measure([devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device] 
+    { return collect_positive_devc ( devc_array, devc_array_positive, devc_count, N, nblocks, blocksize, m_default_device ); });
+  };
   
   std::size_t host_copy_count = 0;
   if ( omp_target_memcpy( &host_copy_count, devc_count, sizeof( std::size_t ),

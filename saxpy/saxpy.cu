@@ -2,13 +2,13 @@
 #ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
 #endif
 
-#include<cstdlib>
-#include<iostream>
-#include<ctime>
+#include <cstdlib>
+#include <iostream>
+#include <ctime>
 #include <cuda.h>
-#include<cuda_runtime.h>
-#include<cuda_bench.cuh>
-#include<catch.hpp>
+#include <cuda_runtime.h>
+#include <cuda_bench.cuh>
+#include <catch.hpp>
 
 namespace cuda_bench {
 

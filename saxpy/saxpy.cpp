@@ -2,12 +2,12 @@
 #ifndef CATCH_CONFIG_ENABLE_BENCHMARKING 
 #endif
 
-#include<iostream>
-#include<cstdlib>
-#include<cmath>
-#include<catch.hpp>
-#include<openmp_bench.h>
-#include<omp.h>
+#include <iostream>
+#include <cstdlib>
+#include <cmath>
+#include <catch.hpp>
+#include <openmp_bench.h>
+#include <omp.h>
 
 namespace openmp_bench {
 
