@@ -23,7 +23,7 @@ export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
 
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8
 
-./build/src/cuda_app --benchmark-samples 1000
+./build/src/cuda_app --benchmark-samples 1000 --benchmark-warmup-time 0
 
 ========
 ## perlmutter
@@ -42,4 +42,10 @@ cmake -S . -B build-clang15-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMP
 cmake --build build-clang15-perlmutter --parallel 16 --verbose
 
 
+
+========
+## frontier
+========
+module load rocm/5.4.3
+cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
 

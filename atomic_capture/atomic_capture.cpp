@@ -144,6 +144,13 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   }
 
   CHECK( std::fabs ( (float)sum ) < 0.0001f );
+ 
+  free( host_copy_array     );
+  free( host_array          );
+  free( host_array_positive );
+  omp_target_free( devc_array,          m_default_device );
+  omp_target_free( devc_array_positive, m_default_device );
+  omp_target_free( devc_count,          m_default_device );
 
   return host_array;
 }
