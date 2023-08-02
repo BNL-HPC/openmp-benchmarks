@@ -53,12 +53,7 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   const T fact = 2.0;//initialize_random ( epsilon );
   T* data_x = ( T* ) malloc( sizeof( T ) * N );
   T* data_y = ( T* ) malloc( sizeof( T ) * N );
-  for(int i=0; i<N; i++)
-  {
-    data_x[i] = initialize_random ( epsilon );
-    data_y[i] = initialize_random ( epsilon );
-  }
-  
+ 
   int m_default_device = omp_get_default_device();
   int m_initial_device = omp_get_initial_device();
   std::size_t m_offset = 0;
@@ -66,32 +61,41 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   T* data_x_device = (T *) omp_target_alloc( sizeof(T) * N, m_default_device);
   T* data_y_device = (T *) omp_target_alloc( sizeof(T) * N, m_default_device);
   T* result        = (T *) omp_target_alloc( sizeof(T) * N, m_default_device);
+  T* result_cpy    = (T *) malloc( sizeof( T ) * N );
   if( data_x_device == NULL or data_y_device == NULL or result == NULL ){
     printf(" ERROR: No space left on device.\n");
     exit(1);
   }
  
-  if ( omp_target_memcpy( data_x_device, data_x, N * sizeof( T ), 
-			  m_offset, m_offset, m_default_device, m_initial_device ) ) {
-       std::cout << "ERROR: copy random numbers from cpu to gpu " << std::endl;
-  }
-  if ( omp_target_memcpy( data_y_device, data_y, N * sizeof( T ), 
-			  m_offset, m_offset, m_default_device, m_initial_device ) ) {
-       std::cout << "ERROR: copy random numbers from cpu to gpu " << std::endl;
-  }
+  BENCHMARK_ADVANCED("OpenMP saxpy")(Catch::Benchmark::Chronometer meter) {
+    for(int i=0; i<N; i++)
+    {
+      data_x[i] = initialize_random ( epsilon );
+      data_y[i] = initialize_random ( epsilon );
+    }
+   
+    if ( omp_target_memcpy( data_x_device, data_x, N * sizeof( T ), 
+  			  m_offset, m_offset, m_default_device, m_initial_device ) ) {
+         std::cout << "ERROR: copy random numbers from cpu to gpu " << std::endl;
+    }
+    if ( omp_target_memcpy( data_y_device, data_y, N * sizeof( T ), 
+  			  m_offset, m_offset, m_default_device, m_initial_device ) ) {
+         std::cout << "ERROR: copy random numbers from cpu to gpu " << std::endl;
+    }
+  
+    //BENCHMARK ("OpenMP saxpy") { return saxpy_kernel ( result, data_x_device, data_y_device, fact, N, nblocks, blocksize); };
+    meter.measure( [result, data_x_device, data_y_device, fact, N, nblocks, blocksize] 
+    { return saxpy_kernel ( result, data_x_device, data_y_device, fact, N, nblocks, blocksize); });
 
-  BENCHMARK ("OpenMP saxpy") { return saxpy_kernel ( result, data_x_device, data_y_device, fact, N, nblocks, blocksize); };
-
-  T* result_cpy = ( T* ) malloc( sizeof( T ) * N );
-  if ( omp_target_memcpy( result_cpy, result, N * sizeof( T ),
-        		  m_offset, m_offset, m_initial_device, m_default_device ) ) {
-       std::cout << "ERROR: copy gpu to cpu " << std::endl;
-  }
-
-  for(int i = 0; i < N; i++) {
-    CHECK ( std::fabs(  result_cpy[i] - ( data_y[i] + fact * data_x[i]  ) ) <= epsilon );
-  }
-
+    if ( omp_target_memcpy( result_cpy, result, N * sizeof( T ),
+          		  m_offset, m_offset, m_initial_device, m_default_device ) ) {
+         std::cout << "ERROR: copy gpu to cpu " << std::endl;
+    }
+  
+    for(int i = 0; i < N; i++) {
+      CHECK ( std::fabs(  result_cpy[i] - ( data_y[i] + fact * data_x[i]  ) ) <= epsilon );
+    }
+  };
   return data_x; 
 }
 

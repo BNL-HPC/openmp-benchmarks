@@ -23,7 +23,7 @@ export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
 
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8
 
-./build/src/cuda_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inputfile --benchmark-warmup-time 1
+./build/src/cuda_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inputfile --benchmark-warmup-time 10
 
 ========
 ## perlmutter
