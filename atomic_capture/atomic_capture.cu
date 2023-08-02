@@ -22,8 +22,7 @@ __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, 
   //TODO no instance of atomicAdd defined with std::size_t as first arg
   unsigned long tid = threadIdx.x + blockIdx.x * blockDim.x;
 
-  //if ( tid < N ) { cuda_dev_array_pos[tid] = 0.0; }
-  //if ( tid == 0) ct[0] = 0;
+  if ( tid == 0) ct[0] = 0;
 
   if ( tid < N ) {
     if ( cuda_dev_array[tid] > 0 ) {

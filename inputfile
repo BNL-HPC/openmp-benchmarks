@@ -1,4 +1,4 @@
-CUDA Saxpy 2^24 128
-CUDA Saxpy 2^24 256
-CUDA Saxpy 2^24 512
-CUDA Saxpy 2^24 1024
+OpenMP Atomic Capture 2^24 128
+OpenMP Atomic Capture 2^24 256
+OpenMP Atomic Capture 2^24 512
+OpenMP Atomic Capture 2^24 1024
