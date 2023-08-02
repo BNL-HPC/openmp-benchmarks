@@ -49,7 +49,7 @@ TEST_CASE("CUDA Atomic Capture 2^16 1024"){
 /* Array size 2^20 */
 /*******************/	
 
-TEST_CASE("CUDA Atomic Capture, 2^18, 128"){
+TEST_CASE("CUDA Atomic Capture 2^20 128"){
 
   const int N = 4096*256; 
   const int blocksize = 128;
