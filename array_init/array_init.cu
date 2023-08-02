@@ -52,6 +52,11 @@ __host__ T* set_to_zero_wrapper ( const int N, const int blocksize ) {
 
   //set_to_zero<<<nblocks, blocksize>>>(cuda_dev_array, N );
   BENCHMARK("CUDA Array Init") { return set_to_zero<<<nblocks, blocksize>>>( cuda_dev_array, N ); };
+  //BENCHMARK_ADVANCED("CUDA Array Init")(Catch::Benchmark::Chronometer meter) {
+  //  meter.measure([cuda_dev_array, N, nblocks, blocksize] 
+  //  { return set_to_zero<<<nblocks, blocksize>>>( cuda_dev_array, N ); });
+  //  cudaDeviceSynchronize() ;
+  //};
   
   T *cuda_host_array = (T *) malloc( N * sizeof( T ) );
   cudaMemcpy(cuda_host_array, cuda_dev_array, N * sizeof( T ), cudaMemcpyDeviceToHost);

@@ -49,16 +49,11 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
 
   T epsilon = 1.e-6;
 
-  T* data_x = (T*)malloc(sizeof(T) * N);
-  T* data_y = (T*)malloc(sizeof(T) * N);
+  T* data_x      = (T*)malloc(sizeof(T) * N);
+  T* data_y      = (T*)malloc(sizeof(T) * N);
+  T* result_host = (T*)malloc(sizeof(T) * N);
 
   const T fact = initialize_random ( epsilon );
-  for(int i=0; i<N; i++)
-  {
-    data_x[i] = initialize_random ( epsilon );
-    data_y[i] = initialize_random ( epsilon );
-  }
-
   T* data_x_dev;
   T* data_y_dev;
   T* result_dev;
@@ -66,19 +61,27 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
   cudaMalloc((void**)&data_y_dev, sizeof(T) * N);
   cudaMalloc((void**)&result_dev, sizeof(T) * N);
 
-  cudaMemcpy(data_x_dev, data_x, sizeof(T) * N, cudaMemcpyHostToDevice);
-  cudaMemcpy(data_y_dev, data_y, sizeof(T) * N, cudaMemcpyHostToDevice);
-  
-  //get_residual<<<nblocks,blocksize>>> ( res_d, data_d, N );  
-  BENCHMARK("CUDA") { return saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); };
-  cudaDeviceSynchronize() ;
- 
-  T* result_host = (T*)malloc(sizeof(T) * N);
-  cudaMemcpy(result_host, result_dev, sizeof(T) * N, cudaMemcpyDeviceToHost);
 
-  for(int i = 0; i < N; i++) {
-    CHECK ( std::fabs(  result_host[i] - ( data_y[i] + fact * data_x[i]  ) ) <= epsilon );
-  }
+  BENCHMARK_ADVANCED("CUDA saxpy")(Catch::Benchmark::Chronometer meter) {
+    for(int i=0; i<N; i++)
+    {
+      data_x[i] = initialize_random ( epsilon );
+      data_y[i] = initialize_random ( epsilon );
+    }
+   
+    cudaMemcpy(data_x_dev, data_x, sizeof(T) * N, cudaMemcpyHostToDevice);
+    cudaMemcpy(data_y_dev, data_y, sizeof(T) * N, cudaMemcpyHostToDevice);
+   
+    //BENCHMARK("CUDA") { return saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); };
+    meter.measure( [result_dev, data_x_dev, data_y_dev, fact, N, nblocks, blocksize]
+    { return saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); });	    
+    cudaDeviceSynchronize() ;
+    cudaMemcpy(result_host, result_dev, sizeof(T) * N, cudaMemcpyDeviceToHost);
+  
+    for(int i = 0; i < N; i++) {
+      CHECK ( std::fabs(  result_host[i] - ( data_y[i] + fact * data_x[i]  ) ) <= epsilon );
+    }
+  };
 
   return data_x;
 

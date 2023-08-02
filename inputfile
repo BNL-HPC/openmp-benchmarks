@@ -1,4 +1,4 @@
-OpenMP Array Init to 0 2^24 128
-OpenMP Array Init to 0 2^24 256
-OpenMP Array Init to 0 2^24 512
-OpenMP Array Init to 0 2^24 1024
+CUDA Saxpy 2^24 128
+CUDA Saxpy 2^24 256
+CUDA Saxpy 2^24 512
+CUDA Saxpy 2^24 1024
