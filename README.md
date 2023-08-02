@@ -50,4 +50,5 @@ cmake --build build-clang15-perlmutter --parallel 16 --verbose
 ========
 module load rocm/5.4.3
 cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
-
+#clang 16 17 -fPIC in CXXFLAGS
+#clang 15 throws PIC error in linker so using amdclang
