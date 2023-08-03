@@ -1,4 +1,6 @@
-OpenMP Atomic Capture 2^24 128
-OpenMP Atomic Capture 2^24 256
-OpenMP Atomic Capture 2^24 512
-OpenMP Atomic Capture 2^24 1024
+CUDA Atomic Update 2^20 128
+CUDA Atomic Update 2^20 128
+CUDA Atomic Update 2^20 128
+CUDA Atomic Update 2^24 128
+CUDA Atomic Update 2^24 256
+CUDA Atomic Update 2^24 512
