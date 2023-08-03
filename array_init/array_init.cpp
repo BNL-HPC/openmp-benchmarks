@@ -45,6 +45,12 @@ void set_to_zero <int> ( int* device_array, const int N, const int blocksize, co
 template <typename T>
 T* set_to_zero_wrapper( const int N, const int blocksize ) {
 
+  #pragma omp target
+  if (omp_is_initial_device ()) {
+    std::cout << "Target region being executed on host!! Aborting!!!!" << std::endl;
+    abort ();
+  }
+
   const int m_default_device = omp_get_default_device();
   const int m_initial_device = omp_get_initial_device();
   const std::size_t m_offset = 0;

@@ -57,6 +57,12 @@ void get_residual ( T* data_device, T* res_device, const int N, const int nblock
 template <typename T>
 T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize ) {
 
+  #pragma omp target
+  if (omp_is_initial_device ()) {
+    std::cout << "Target region being executed on host!! Aborting!!!!" << std::endl;
+    abort ();
+  }
+
   const std::size_t threads_tot = N;
   const std::size_t nblocks      = ( threads_tot + blocksize - 1 ) / blocksize;
 
