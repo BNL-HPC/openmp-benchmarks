@@ -20,14 +20,13 @@ template <typename T>
 T initialize_random ( T epsilon ) {
 
   if (std::is_same <float, T>::value) { 
-    return rand() / static_cast <T> (RAND_MAX);
-    //return drand48();
+    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
   }
   if (std::is_same <double, T>::value) {
-    return rand() / static_cast <T> (RAND_MAX);
+    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
   }
   if (std::is_same <int, T>::value) {
-    return rand();
+    return (rand() % 200) - 100;
   }
 }
 

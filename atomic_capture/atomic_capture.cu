@@ -49,7 +49,7 @@ __host__ void host_array_initialize <int> ( int* host_array, const int N ) {
 
   srand(time(0));
   for(int i = 0; i < N; i++){
-    host_array[i] = rand() % RAND_MAX;
+    host_array[i] = rand() % 200 - 100;
   } 
 
   return;

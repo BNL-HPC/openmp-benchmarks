@@ -31,7 +31,7 @@ void host_array_initialize <int> ( int* host_array, const std::size_t N ) {
 
   srand(time(0));
   for(std::size_t i = 0; i < N; i++){
-    host_array[i] = rand() % RAND_MAX;
+    host_array[i] = rand() % 200 -100;
   } 
 
   return; 
