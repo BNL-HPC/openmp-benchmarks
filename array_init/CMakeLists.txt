@@ -9,7 +9,17 @@ if(CMAKE_CUDA_COMPILER)
     target_include_directories(array_init_cuda_app PUBLIC ../include)
     set_target_properties(array_init_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
 endif()
-    
+
+if(CMAKE_HIP_COMPILER)
+    set(array_init_hip_sources
+      ../src/catch_main.cpp
+      array_init_test.hip
+      array_init.hip
+    )
+    add_executable(array_init_hip_app ${array_init_hip_sources})
+    target_include_directories(array_init_hip_app PUBLIC ../include)
+endif()
+ 
 set(array_init_omp_sources
   ../src/catch_main.cpp
   array_init_test.cpp

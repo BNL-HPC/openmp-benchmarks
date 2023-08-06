@@ -48,7 +48,7 @@ cmake --build build-clang15-perlmutter --parallel 16 --verbose
 ========
 ## frontier
 ========
-module load rocm/5.4.3
+module load rocm/5.4.3 craype-accel-amd-gfx90a
 cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
 #clang 16 17 -fPIC in CXXFLAGS
 #clang 15 throws PIC error in linker so using amdclang
