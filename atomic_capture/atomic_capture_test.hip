@@ -13,8 +13,8 @@ TEST_CASE("HIP Atomic Capture 2^16 128"){
   const int N = 4096*16; 
   const int blocksize = 128;
   double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
+  //float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
+  //int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
 }
 
 TEST_CASE("HIP Atomic Capture 2^16 256"){

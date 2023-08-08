@@ -22,6 +22,7 @@ endif()
 
 set(saxpy_omp_sources
   ../src/catch_main.cpp
+  ../src/utils.cpp
   saxpy_test.cpp
   saxpy.cpp
 )

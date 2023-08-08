@@ -39,7 +39,7 @@ T initialize_random ( T epsilon ) {
 template<typename T>
 __global__ void get_residual ( T* res, T* data, const int size ) {
 
-  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  unsigned long i = blockIdx.x * blockDim.x + threadIdx.x;
   
   if ( i == 0 ) res[i] = 0.;
 
@@ -77,10 +77,14 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
   T* res_d;
   hipMalloc((void**)&res_d, sizeof(T) );
   
+  std::cout << __FILE__ << " " << __LINE__ <<std::endl;
   BENCHMARK_ADVANCED("HIP Atomic Update")(Catch::Benchmark::Chronometer meter) {
+  std::cout << __FILE__ << " " << __LINE__ <<std::endl;
     hipMemset( res_d, 0, sizeof(T) );
+  std::cout << __FILE__ << " " << __LINE__ <<std::endl;
     meter.measure([res_d, data_d, N, blocks, threads] 
-    { hipLaunchKernelGGL( get_residual, blocks, threads, 0, 0, res_d, data_d, N ); });
+      { get_residual<<<blocks, threads>>> ( res_d, data_d, N ); }
+    );
     hipDeviceSynchronize() ;
   };
  
@@ -90,6 +94,7 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
 
   CHECK ( std::fabs(  res_h - res ) <= epsilon );
 //  std::cout << res_h << " " << res << std::endl;
+  std::cout << __FILE__ << " " << __LINE__ <<std::endl;
 
   return data;
 

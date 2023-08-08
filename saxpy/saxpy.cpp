@@ -45,14 +45,7 @@ void saxpy_kernel ( T* result, T* data_x_device, T* data_y_device, const T fact,
 template <typename T>
 T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
 
-  bool is_target_initial_device = false;	
-  #pragma omp target map(tofrom: is_target_initial_device)
-  if (omp_is_initial_device ()) {
-    printf( "Target region being executed on host!! Aborting!!!! \n");
-    is_target_initial_device = true;
-  }
-  if ( is_target_initial_device )
-    std::abort ();
+  check_target_device ();
 
   const std::size_t threads_tot = N;
   const std::size_t nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;

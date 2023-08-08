@@ -1,6 +1,2 @@
-CUDA Atomic Update 2^20 128
-CUDA Atomic Update 2^20 128
-CUDA Atomic Update 2^20 128
-CUDA Atomic Update 2^24 128
-CUDA Atomic Update 2^24 256
-CUDA Atomic Update 2^24 512
+OpenMP Saxpy 2^18 256
+OpenMP Saxpy 2^24 256

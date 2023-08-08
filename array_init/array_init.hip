@@ -33,13 +33,14 @@ __global__ void set_to_zero <int> ( int* hip_dev_array, const int N ) {
 template <typename T>
 __host__ T* set_to_zero_wrapper ( const int N, const int blocksize ) {
 
+  /* Allocate an array of length N on host */
   T *data = (T *) malloc( N * sizeof( T ) );
   for(int i=0; i<N; i++)
   {
     data[i] = drand48();
   }
 
-  /* Allocate an array of length N */
+  /* Allocate an array of length N on device */
   T* hip_dev_array; 
   hipMalloc((void**)&hip_dev_array, sizeof( T ) * N);
   
@@ -47,10 +48,10 @@ __host__ T* set_to_zero_wrapper ( const int N, const int blocksize ) {
 
   const int threads_tot = N;
   const int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
-  dim3 blocks(nblocks);
-  dim3 threads(blocksize);
+  dim3 blocks(nblocks,1,1);
+  dim3 threads(blocksize,1,1);
 
-  BENCHMARK("HIP Array Init") { hipLaunchKernelGGL( set_to_zero, blocks, threads, 0, 0, hip_dev_array, N ); };
+  BENCHMARK("HIP Array Init") { set_to_zero<<<blocks, threads, 0, 0>>> ( hip_dev_array, N ); };
   
   T *hip_host_array = (T *) malloc( N * sizeof( T ) );
   hipMemcpy(hip_host_array, hip_dev_array, N * sizeof( T ), hipMemcpyDeviceToHost);

@@ -81,14 +81,7 @@ std::size_t collect_positive_serial_host ( T* host_array, T* host_array_positive
 template <typename T>
 T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
 
-  bool is_target_initial_device = false;	
-  #pragma omp target map(tofrom: is_target_initial_device)
-  if (omp_is_initial_device ()) {
-    printf( "Target region being executed on host!! Aborting!!!! \n");
-    is_target_initial_device = true;
-  }
-  if ( is_target_initial_device )
-    std::abort ();
+  check_target_device ();
 
   const std::size_t threads_tot = N;
   const std::size_t nblocks      = ( threads_tot + blocksize - 1 ) / blocksize;

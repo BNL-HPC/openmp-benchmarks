@@ -74,8 +74,7 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
     //BENCHMARK("HIP") { return saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); };
     //TODO: fix return
     meter.measure( [result_dev, data_x_dev, data_y_dev, fact, N, blocks, threads]
-    { hipLaunchKernelGGL( saxpy_kernel, blocks, threads, 0, 0, result_dev, data_x_dev, data_y_dev, fact, N); });	    
-    //saxpy_kernel<<<nblocks, blocksize>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); 
+    { saxpy_kernel<<<blocks, threads, 0, 0>>> ( result_dev, data_x_dev, data_y_dev, fact, N ); });	    
     hipDeviceSynchronize() ;
     hipMemcpy(result_host, result_dev, sizeof(T) * N, hipMemcpyDeviceToHost);
   
