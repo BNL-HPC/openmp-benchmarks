@@ -7,6 +7,7 @@
 #include <cmath>
 #include <catch.hpp>
 #include <openmp_bench.h>
+#include <common.hpp>
 #include <omp.h>
 
 namespace openmp_bench {
@@ -14,20 +15,6 @@ namespace openmp_bench {
 template double* saxpy_wrapper <double> ( const std::size_t, const std::size_t );
 template float*  saxpy_wrapper <float>  ( const std::size_t, const std::size_t );
 template int*    saxpy_wrapper <int>    ( const std::size_t, const std::size_t );
-
-template <typename T>
-T initialize_random ( T epsilon ) {
-
-  if (std::is_same <float, T>::value) { 
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <double, T>::value) {
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <int, T>::value) {
-    return (rand() % 200) - 100;
-  }
-}
 
 template <typename T>
 void saxpy_kernel ( T* result, T* data_x_device, T* data_y_device, const T fact, const int N, const int nblocks, const int blocksize ) {
@@ -50,8 +37,8 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   const std::size_t threads_tot = N;
   const std::size_t nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  const T epsilon = 1.e-12;
-  const T fact = 2.0;//initialize_random ( epsilon );
+  const T epsilon = 1.e-6;
+  const T fact = common::initialize_random ( epsilon );
   T* data_x = ( T* ) malloc( sizeof( T ) * N );
   T* data_y = ( T* ) malloc( sizeof( T ) * N );
 
@@ -71,8 +58,8 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   BENCHMARK_ADVANCED("OpenMP saxpy")(Catch::Benchmark::Chronometer meter) {
     for(int i=0; i<N; i++)
     {
-      data_x[i] = initialize_random ( epsilon );
-      data_y[i] = initialize_random ( epsilon );
+      data_x[i] = common::initialize_random ( epsilon );
+      data_y[i] = common::initialize_random ( epsilon );
     }
    
     if ( omp_target_memcpy( data_x_device, data_x, N * sizeof( T ), 

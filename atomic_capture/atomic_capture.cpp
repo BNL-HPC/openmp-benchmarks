@@ -7,6 +7,7 @@
 #include <iostream>
 #include <openmp_bench.h>
 #include <catch.hpp>
+#include <common.hpp>
 #include <omp.h>
 
 namespace openmp_bench {
@@ -14,28 +15,6 @@ namespace openmp_bench {
 template double* atomic_capture_wrapper <double> ( const std::size_t, const std::size_t );
 template float*  atomic_capture_wrapper <float>  ( const std::size_t, const std::size_t );
 template int*    atomic_capture_wrapper <int>    ( const std::size_t, const std::size_t );
-
-template <typename T>
-void host_array_initialize ( T* host_array, const std::size_t N ) {
-
-  srand(time(0));
-  for(std::size_t i = 0; i < N; i++){
-    host_array[i] = (T)(2*drand48() - 1.0);
-  } 
-
-  return; 
-}
-
-template <>
-void host_array_initialize <int> ( int* host_array, const std::size_t N ) {
-
-  srand(time(0));
-  for(std::size_t i = 0; i < N; i++){
-    host_array[i] = rand() % 200 -100;
-  } 
-
-  return; 
-}
 
 
 template <typename T>
@@ -89,7 +68,15 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   T *host_array          = (T *) malloc( N * sizeof( T ) );
   T *host_array_positive = (T *) malloc( N * sizeof( T ) );
  
-  host_array_initialize ( host_array, N );
+  //host_array_initialize ( host_array, N );
+
+  T epsilon = 1e-6;
+  
+  srand(time(0));
+  for(std::size_t i = 0; i < N; i++){
+    host_array[i] = common::initialize_random ( epsilon );
+  } 
+
   std::size_t host_count = collect_positive_serial_host ( host_array, host_array_positive, N );
 
   const std::size_t m_default_device = omp_get_default_device();

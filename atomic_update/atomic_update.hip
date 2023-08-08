@@ -6,8 +6,9 @@
 #include <iostream>
 #include <ctime>
 #include <hip/hip_runtime.h>
-#include <hip_bench.hpp>
+#include <hip_bench.h>
 #include <catch.hpp>
+#include <common.hpp>
 
 namespace hip_bench {
 
@@ -15,27 +16,6 @@ template double* atomic_update_wrapper <double> ( const int, const int );
 template float*  atomic_update_wrapper <float>  ( const int, const int );
 template int*    atomic_update_wrapper <int>    ( const int, const int );
 	
-template <typename T> 
-T get_epsilon () { return 1.0e-6; }
-
-template <> double get_epsilon <double> () { return 1.0e-6; }
-template <> float  get_epsilon <float>  () { return 1.0e-2; }
-template <> int    get_epsilon <int>    () { return 0; }
-
-template <typename T>
-T initialize_random ( T epsilon ) {
-
-  if (std::is_same <float, T>::value) { 
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <double, T>::value) {
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <int, T>::value) {
-    return (rand() % 200) - 100;
-  }
-}
-
 template<typename T>
 __global__ void get_residual ( T* res, T* data, const int size ) {
 
@@ -56,13 +36,12 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize ) {
   dim3 blocks(nblocks);
   dim3 threads(blocksize);
 
-  T epsilon = get_epsilon <T> ();
+  T epsilon = common::get_epsilon <T> ();
 
   T* data = (T*)malloc(sizeof(T) * N);
 
-  for(int i=0; i<N; i++)
-  {
-    data[i] = initialize_random ( epsilon );
+  for(int i=0; i<N; i++) {
+    data[i] = common::initialize_random ( epsilon );
   }
 
   T res = 0.0;

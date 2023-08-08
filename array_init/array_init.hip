@@ -4,7 +4,7 @@
 
 #include <catch.hpp>
 #include <hip/hip_runtime.h>
-#include <hip_bench.hpp>
+#include <hip_bench.h>
 #include <iostream>
 #include <cstdlib>
 

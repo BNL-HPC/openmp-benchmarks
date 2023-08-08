@@ -12,9 +12,6 @@ template <typename T>
 T* set_to_zero_wrapper( const int N, const int blocksize );
 
 template <typename T>
-void host_array_initialize ( T* host_array, const std::size_t N );
-
-template <typename T>
 void collect_positive_devc ( T* devc_array, T* devc_array_positive, std::size_t* devc_count, const std::size_t N, const std::size_t nblocks, const std::size_t blocksize );
 
 template <typename T>

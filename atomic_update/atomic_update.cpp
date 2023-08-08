@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <catch.hpp>
+#include <common.hpp>
 #include <openmp_bench.h>
 #include <omp.h>
 
@@ -14,27 +15,6 @@ namespace openmp_bench {
 template double* atomic_update_wrapper <double> ( const std::size_t, const std::size_t );
 template float*  atomic_update_wrapper <float>  ( const std::size_t, const std::size_t );
 template int*    atomic_update_wrapper <int>    ( const std::size_t, const std::size_t );
-
-template <typename T> 
-T get_epsilon () { return 1.0e-6; }
-
-template <> double get_epsilon <double> () { return 1.0e-6; }
-template <> float  get_epsilon <float>  () { return 1.0e-2; }
-template <> int    get_epsilon <int>    () { return 0; }
-
-template <typename T>
-T initialize_random ( T epsilon ) {
-
-  if (std::is_same <float, T>::value) { 
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <double, T>::value) {
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <int, T>::value) {
-    return (rand() % 200) - 100;
-  }
-}
 
 template <typename T>
 void get_residual ( T* data_device, T* res_device, const int N, const int nblocks, const int blocksize ) {
@@ -59,14 +39,14 @@ T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   check_target_device ();
 
   const std::size_t threads_tot = N;
-  const std::size_t nblocks      = ( threads_tot + blocksize - 1 ) / blocksize;
+  const std::size_t nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  T epsilon = get_epsilon <T> ();
+  T epsilon = common::get_epsilon <T> ();
 
   T* data = ( T* ) malloc( sizeof( T ) * N );
-  for(int i=0; i<N; i++)
-  {
-    data[i] = initialize_random ( epsilon );
+
+  for(int i=0; i<N; i++) {
+    data[i] = common::initialize_random ( epsilon );
   }
   
   T res = 0.0;
@@ -107,7 +87,7 @@ T* atomic_update_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   host_copy_res = (double) host_copy_res / (double) N;
 
   CHECK ( std::fabs(  host_copy_res - res ) <= epsilon );
-  //std::cout << host_copy_res << " " << res << std::endl;
+  std::cout << host_copy_res << " " << res << std::endl;
 
   return data; 
 }

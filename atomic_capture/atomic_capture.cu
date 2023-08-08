@@ -9,6 +9,7 @@
 #include <cuda_runtime.h>
 #include <cuda_bench.cuh>
 #include <catch.hpp>
+#include <common.hpp>
 
 namespace cuda_bench {
 
@@ -33,27 +34,6 @@ __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, 
   }
 }
 
-template <typename T>
-__host__ void host_array_initialize ( T* host_array, const int N ) {
-
-  srand(time(0));
-  for(int i = 0; i < N; i++){
-    host_array[i] = (T)(2*drand48() - 1.0);
-  } 
-
-  return;
-}
-
-template <>
-__host__ void host_array_initialize <int> ( int* host_array, const int N ) {
-
-  srand(time(0));
-  for(int i = 0; i < N; i++){
-    host_array[i] = rand() % 200 - 100;
-  } 
-
-  return;
-}
 
 template <typename T>
 __host__ int collect_positive_serial_host ( T* host_array, T* host_array_positive, const int N ) {
@@ -80,7 +60,15 @@ __host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
   T *host_array          = (T *) malloc( N * sizeof( T ) );
   T *host_array_positive = (T *) malloc( N * sizeof( T ) );
  
-  host_array_initialize ( host_array, N);
+  //host_array_initialize ( host_array, N);
+
+  T epsilon = 1e-6;
+
+  srand(time(0));
+  for(std::size_t i = 0; i < N; i++){
+    host_array[i] = common::initialize_random ( epsilon );
+  } 
+
   int host_count = collect_positive_serial_host ( host_array, host_array_positive, N );
 
   T* cuda_dev_array;
