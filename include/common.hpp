@@ -20,10 +20,25 @@ T initialize_random ( T epsilon ) {
 
 template <typename T> 
 T get_epsilon () { return 1.0e-6; }
-
 template <> double get_epsilon <double> () { return 1.0e-6; }
-template <> float  get_epsilon <float>  () { return 1.0e-2; }
+template <> float  get_epsilon <float>  () { return 1.0e-3; }
 template <> int    get_epsilon <int>    () { return 0; }
+
+template <typename T>
+std::size_t collect_positive_serial_host ( T* host_array, T* host_array_positive, const std::size_t N ) {
+
+  std::size_t host_ser_count = 0;
+
+  for ( int i = 0; i < N; i++ ) {
+      if ( host_array[i] > 0. ) {
+        host_array_positive[host_ser_count] = host_array[i];
+        host_ser_count++;
+      }
+  }
+
+  return host_ser_count;	  
+}
+
 
 
 } // namespace common

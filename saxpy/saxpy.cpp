@@ -37,7 +37,7 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   const std::size_t threads_tot = N;
   const std::size_t nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  const T epsilon = 1.e-6;
+  const T epsilon = common::get_epsilon <T> ();
   const T fact = common::initialize_random ( epsilon );
   T* data_x = ( T* ) malloc( sizeof( T ) * N );
   T* data_y = ( T* ) malloc( sizeof( T ) * N );

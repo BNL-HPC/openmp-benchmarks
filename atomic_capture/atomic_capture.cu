@@ -34,23 +34,6 @@ __global__ void collect_pos( T* cuda_dev_array, T* cuda_dev_array_pos, int* ct, 
   }
 }
 
-
-template <typename T>
-__host__ int collect_positive_serial_host ( T* host_array, T* host_array_positive, const int N ) {
-
-  int host_ser_count = 0;
-
-  for ( int i = 0; i < N; i++ ) {
-      if ( host_array[i] > 0. ) {
-        host_array_positive[host_ser_count] = host_array[i];
-        host_ser_count++;
-      }
-  }
-
-  return host_ser_count;	  
-}
-
-
 template <typename T>
 __host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
 
@@ -60,16 +43,14 @@ __host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
   T *host_array          = (T *) malloc( N * sizeof( T ) );
   T *host_array_positive = (T *) malloc( N * sizeof( T ) );
  
-  //host_array_initialize ( host_array, N);
-
-  T epsilon = 1e-6;
+  T epsilon = common::get_epsilon <T> ();
 
   srand(time(0));
   for(std::size_t i = 0; i < N; i++){
     host_array[i] = common::initialize_random ( epsilon );
   } 
 
-  int host_count = collect_positive_serial_host ( host_array, host_array_positive, N );
+  std::size_t host_count = common::collect_positive_serial_host ( host_array, host_array_positive, N );
 
   T* cuda_dev_array;
   T* cuda_dev_array_pos;
@@ -106,7 +87,8 @@ __host__ T* atomic_capture_wrapper ( const int N, const int blocksize) {
     sum += host_copy_array[i] - host_array_positive[i];
   }
 
-  CHECK( std::fabs ( (float)sum ) < 0.0001f );
+  //CHECK( std::fabs ( (float)sum ) < 0.0001f );
+  CHECK( std::fabs ( sum ) <= epsilon );
 
   return host_array; 
 }

@@ -33,7 +33,7 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
   int threads_tot = N;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  T epsilon = 1.e-6;
+  const T epsilon = common::get_epsilon <T> ();
 
   T* data_x      = (T*)malloc(sizeof(T) * N);
   T* data_y      = (T*)malloc(sizeof(T) * N);

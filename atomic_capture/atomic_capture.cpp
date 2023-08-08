@@ -43,21 +43,6 @@ void collect_positive_devc ( T* devc_array, T* devc_array_positive, std::size_t*
 }
 
 template <typename T>
-std::size_t collect_positive_serial_host ( T* host_array, T* host_array_positive, const std::size_t N ) {
-
-  std::size_t host_ser_count = 0;
-
-  for ( std::size_t i = 0; i < N; i++ ) {
-      if ( host_array[i] > 0. ) {
-        host_array_positive[host_ser_count] = host_array[i];
-        host_ser_count++;
-      }
-  }
-
-  return host_ser_count;	  
-}
-
-template <typename T>
 T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
 
   check_target_device ();
@@ -68,16 +53,14 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
   T *host_array          = (T *) malloc( N * sizeof( T ) );
   T *host_array_positive = (T *) malloc( N * sizeof( T ) );
  
-  //host_array_initialize ( host_array, N );
-
-  T epsilon = 1e-6;
+  T epsilon = common::get_epsilon <T> ();
   
   srand(time(0));
   for(std::size_t i = 0; i < N; i++){
     host_array[i] = common::initialize_random ( epsilon );
   } 
 
-  std::size_t host_count = collect_positive_serial_host ( host_array, host_array_positive, N );
+  std::size_t host_count = common::collect_positive_serial_host ( host_array, host_array_positive, N );
 
   const std::size_t m_default_device = omp_get_default_device();
   const std::size_t m_initial_device = omp_get_initial_device();
@@ -135,7 +118,7 @@ T* atomic_capture_wrapper ( const std::size_t N, const std::size_t blocksize ) {
     sum += host_copy_array[i] - host_array_positive[i];
   }
 
-  CHECK( std::fabs ( (float)sum ) < 0.0001f );
+  CHECK( std::fabs ( sum ) <= epsilon );
  
   free( host_copy_array     );
   free( host_array          );
