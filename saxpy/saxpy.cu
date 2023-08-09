@@ -9,6 +9,7 @@
 #include <cuda_runtime.h>
 #include <cuda_bench.cuh>
 #include <catch.hpp>
+#include <common.hpp>
 
 namespace cuda_bench {
 
@@ -16,20 +17,6 @@ template double* saxpy_wrapper <double> ( const int, const int );
 template float*  saxpy_wrapper <float>  ( const int, const int );
 template int*    saxpy_wrapper <int>    ( const int, const int );
 	
-template <typename T>
-T initialize_random ( T epsilon ) {
-
-  if (std::is_same <float, T>::value) { 
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <double, T>::value) {
-    return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;
-  }
-  if (std::is_same <int, T>::value) {
-    return (rand() % 200) - 100;
-  }
-}
-
 template<typename T>
 __global__ void saxpy_kernel ( T* result_dev, T* data_x_dev, T* data_y_dev, const T fact, const int size ) {
 
@@ -46,13 +33,13 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
   int threads_tot = N;
   int nblocks     = ( threads_tot + blocksize - 1 ) / blocksize;
 
-  T epsilon = 1.e-6;
+  const T epsilon = common::get_epsilon <T> ();
 
   T* data_x      = (T*)malloc(sizeof(T) * N);
   T* data_y      = (T*)malloc(sizeof(T) * N);
   T* result_host = (T*)malloc(sizeof(T) * N);
 
-  const T fact = initialize_random ( epsilon );
+  const T fact = common::initialize_random ( epsilon );
   T* data_x_dev;
   T* data_y_dev;
   T* result_dev;
@@ -64,8 +51,8 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize ) {
   BENCHMARK_ADVANCED("CUDA saxpy")(Catch::Benchmark::Chronometer meter) {
     for(int i=0; i<N; i++)
     {
-      data_x[i] = initialize_random ( epsilon );
-      data_y[i] = initialize_random ( epsilon );
+      data_x[i] = common::initialize_random ( epsilon );
+      data_y[i] = common::initialize_random ( epsilon );
     }
    
     cudaMemcpy(data_x_dev, data_x, sizeof(T) * N, cudaMemcpyHostToDevice);

@@ -22,6 +22,7 @@ endif()
 
 set(atomic_update_omp_sources
   ../src/catch_main.cpp
+  ../src/utils.cpp
   atomic_update_test.cpp
   atomic_update.cpp
 )

@@ -1,5 +1,5 @@
 #include <hip/hip_runtime.h>
-#include <hip_bench.hpp>
+#include <hip_bench.h>
 #include <catch.hpp>
 
 namespace hip_bench {
@@ -8,7 +8,7 @@ namespace hip_bench {
 /* Array size 2^16 */
 /*******************/	
 
-TEST_CASE("HIP Atomic Update 2^16 128"){
+TEST_CASE("HIP Atomic Update 2^6 128"){
 
   const int N = 4096*16; 
   const int blocksize = 128;
@@ -17,7 +17,7 @@ TEST_CASE("HIP Atomic Update 2^16 128"){
   int*    temp3 = atomic_update_wrapper <int>    ( N, blocksize );  
 }
 
-TEST_CASE("HIP Atomic Update 2^16 256"){
+TEST_CASE("HIP Atomic Update 2^6 256"){
 
   const int N = 4096*16; 
   const int blocksize = 256;
@@ -26,7 +26,7 @@ TEST_CASE("HIP Atomic Update 2^16 256"){
   int*    temp3 = atomic_update_wrapper <int>    ( N, blocksize );  
 }
 
-TEST_CASE("HIP Atomic Update 2^16 512"){
+TEST_CASE("HIP Atomic Update 2^6 512"){
 
   const int N = 4096*16; 
   const int blocksize = 512;
@@ -35,7 +35,7 @@ TEST_CASE("HIP Atomic Update 2^16 512"){
   int*    temp3 = atomic_update_wrapper <int>    ( N, blocksize );  
 }
 
-TEST_CASE("HIP Atomic Update 2^16 1024"){
+TEST_CASE("HIP Atomic Update 2^6 1024"){
 
   const int N = 4096*16; 
   const int blocksize = 1024;

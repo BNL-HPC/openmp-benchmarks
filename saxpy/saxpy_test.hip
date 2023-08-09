@@ -1,5 +1,5 @@
 #include <hip/hip_runtime.h>
-#include <hip_bench.hpp>
+#include <hip_bench.h>
 #include <catch.hpp>
 
 namespace hip_bench {

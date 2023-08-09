@@ -22,6 +22,7 @@ endif()
  
 set(array_init_omp_sources
   ../src/catch_main.cpp
+  ../src/utils.cpp
   array_init_test.cpp
   array_init.cpp
 )
