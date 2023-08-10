@@ -25,6 +25,9 @@ T* saxpy_wrapper ( const std::size_t N, const std::size_t blocksize );
 
 void check_target_device () ;
 
+template <typename T>
+T* reduction_wrapper ( const std::size_t N, const std::size_t blocksize );
+
 
 
 

@@ -24,6 +24,8 @@ __host__ T* atomic_update_wrapper ( const int N, const int blocksize);
 template <typename T>
 __host__ T* saxpy_wrapper ( const int N, const int blocksize);
 
+template <typename T>
+__host__ T* reduction_wrapper ( const int N, const int blocksize);
 
 
 
