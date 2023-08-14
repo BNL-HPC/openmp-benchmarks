@@ -52,7 +52,7 @@ cmake -S . -B build-clang16-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMP
 
 cmake --build build-clang16-perlmutter --parallel 16 --verbose
 
-### OLCF Fontier
+### OLCF Frontier
 
 Set --offload-arch=gfx90a for Mi250X
 
