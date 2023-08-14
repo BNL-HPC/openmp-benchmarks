@@ -1,9 +1,14 @@
+# Microbenchmarking OpenMP target offload with Catch2
 
+## Build instructions for various machines
 
-To compile
-========
-## BNL IC
-========
+Currently for OpenMP target offload we need to edit the flag --offload-arch in CMakeLists.txt according to the targeted GPU architecture
+
+### BNL Institutional Cluster
+
+Set --offload-arch=sm_37 for K80
+
+Set --offload-arch=sm_60 for P100
 
 module load git/2.11.1 cmake/3.23.1 llvm/13.0.1
 
@@ -11,9 +16,21 @@ cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_C_COMPILER=clang -DCM
 
 cmake --build build --parallel 8
 
-========
-## lambda2
-========
+### BNL CSI alpha1/lambda1/lambda2/lambda3/lambda4
+
+Set --offload-arch=sm_80 for alpha1 A30
+
+Set --offload-arch=sm_70 for lambda1 V100
+
+Set --offload-arch=sm_86 for lambda2 A6000
+
+Set --offload-arch=gfx906 for lambda2 Vega20
+
+Set --offload-arch=gfx906 for lambda3
+
+Set --offload-arch=sm_75 for lambda4 2080Ti
+
+module use /work/software/modulefiles
 
 module load nvhpc/22.9
 
@@ -25,40 +42,26 @@ export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
 
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8
 
-./build/src/cuda_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inputfile --benchmark-warmup-time 10
+### NERSC Perlmutter
 
-========
-## perlmutter
-========
-module purge
+Set --offload-arch=sm_80 for A100 
 
-module load llvm/16 cudatoolkit/11.7
-
-cmake -S . -B build-llvm16-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native"
-
-cmake --build
-
-salloc
-
-./app
-
-Currently Loaded Modules:
-  1) craype-x86-milan     4) xpmem/2.5.2-2.4_3.48__gd0f7936.shasta   7) cray-libsci/23.02.1.1  10) gcc/11.2.0              13) xalt/2.10.2              16) cudatoolkit/11.7
-  2) libfabric/1.15.2.0   5) PrgEnv-gnu/8.3.3                        8) cray-mpich/8.1.25      11) perftools-base/23.03.0  14) Nsight-Compute/2022.1.1  17) craype-accel-nvidia80
-  3) craype-network-ofi   6) cray-dsmml/0.2.2                        9) craype/2.7.20          12) cpe/23.03               15) Nsight-Systems/2022.2.1  18) gpu/1.0
-
-cmake -S . -B build-clang15-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_FLAGS="-O3 -mtune=native --cuda-path=/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/ --cuda-gpu-arch=sm_80 -I/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/include/ -L/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/lib64 -lcudart_static -ldl -lrt -pthreads" -DCMAKE_PREFIX_PATH="" -DCMAKE_CUDA_COMPILER=/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/bin/nvcc -DCUDA_TOOLKIT_ROOT_DIR=/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/
-
-Jul 18, 2023
+module load llvm/16 cudatoolkit/11.7 cmake/3.24.3
 
 cmake -S . -B build-clang16-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native -L/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/lib64 -lcudart -lcudart_static -ldl -lrt -pthreads"
-cmake --build build-clang15-perlmutter --parallel 16 --verbose
 
+cmake --build build-clang16-perlmutter --parallel 16 --verbose
 
+### OLCF Fontier
 
-========
-## frontier
-========
+Set --offload-arch=gfx90a for Mi250X
+
 module load rocm/5.4.3 cmake craype-accel-amd-gfx90a
 
 cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
+
+cmake --build build-clang15-frontier --parallel 16 --verbose
+
+## Running a microbenchmark
+
+./build/saxpy/saxpy_omp_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inputfile --benchmark-warmup-time 10
