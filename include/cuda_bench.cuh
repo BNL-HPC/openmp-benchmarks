@@ -27,6 +27,8 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize);
 template <typename T>
 __host__ T* reduction_wrapper ( const int N, const int blocksize);
 
+template <typename T>
+__host__ T* gemm_wrapper ( const int M, const int N, const int K);
 
 
 } // namespace cuda_bench
