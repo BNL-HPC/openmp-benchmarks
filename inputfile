@@ -1,2 +1,2 @@
-OpenMP Saxpy 2^18 256
-OpenMP Saxpy 2^24 256
+OpenMP Atomic Capture 2^16 256
+OpenMP Atomic Capture 2^20 256
