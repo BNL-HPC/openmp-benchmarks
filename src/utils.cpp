@@ -13,8 +13,10 @@ void openmp_bench::check_target_device () {
   }
   if ( is_target_initial_device )
     std::abort ();
+#ifdef OMP_PRINT_DEVICE_ID
   else
     printf( "\nTarget region being executed on device ID %d \n", omp_get_default_device() );
+#endif
 
 }
 

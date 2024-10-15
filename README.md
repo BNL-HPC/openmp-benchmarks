@@ -4,6 +4,8 @@
 
 Currently for OpenMP target offload we need to edit the flag --offload-arch in CMakeLists.txt according to the targeted GPU architecture
 
+After upgrading to Catch2 v3.x, specify path to Catch2 via -DCatch_Root=/path/to/Catch2, otherwise CMake will add it as a dependency
+
 ### BNL Institutional Cluster
 
 Set --offload-arch=sm_37 for K80
@@ -61,6 +63,14 @@ module load rocm/5.4.3 cmake craype-accel-amd-gfx90a
 cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
 
 cmake --build build-clang15-frontier --parallel 16 --verbose
+
+### BNL CSI HPC Dahlia
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -B build/ -S . -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCatch2_ROOT=/home/atif/openmp-benchmarks/Catch22
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake --build build/ --parallel 16
+
+./build/saxpy/saxpy_omp_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inp-omp --benchmark-warmup-time 10 -r tabular
 
 ## Running a microbenchmark
 

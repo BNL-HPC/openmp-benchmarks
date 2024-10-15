@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <cuda.h>
-#include <catch.hpp>
 
 namespace cuda_bench {
 

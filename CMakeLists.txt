@@ -3,6 +3,26 @@ cmake_minimum_required(VERSION 3.21)
 project(OpenMP-target-offload-benchmarks VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 14)
 
+##add_subdirectory(Catch2)
+
+if(NOT DEFINED Catch2_ROOT)
+  message("-- Download and configure Catch2 from GitHub")
+  include(FetchContent)
+  set(FETCHCONTENT_QUIET OFF)
+
+  FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        origin/devel
+    )
+
+  FetchContent_Populate(Catch2)
+  add_subdirectory(${CMAKE_BINARY_DIR}/_deps/catch2-src)
+else()
+  add_subdirectory(${Catch2_ROOT})
+endif()
+
+
 include(CheckLanguage)
 check_language(CUDA)
 if(CMAKE_CUDA_COMPILER)
@@ -42,8 +62,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 include_directories(include)
 
 add_subdirectory(saxpy)
-add_subdirectory(reduction)
-add_subdirectory(array_init)
-add_subdirectory(atomic_update)
-add_subdirectory(atomic_capture)
-#add_subdirectory(atomic_reduce)
+#add_subdirectory(reduction)
+#add_subdirectory(array_init)
+#add_subdirectory(atomic_update)
+#add_subdirectory(atomic_capture)
+##add_subdirectory(atomic_reduce)
