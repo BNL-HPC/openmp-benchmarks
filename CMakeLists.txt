@@ -63,7 +63,7 @@ include_directories(include)
 
 add_subdirectory(saxpy)
 #add_subdirectory(reduction)
-#add_subdirectory(array_init)
+add_subdirectory(array_init)
 #add_subdirectory(atomic_update)
 #add_subdirectory(atomic_capture)
 ##add_subdirectory(atomic_reduce)

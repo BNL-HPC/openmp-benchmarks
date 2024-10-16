@@ -8,6 +8,7 @@ if(CMAKE_CUDA_COMPILER)
     add_executable(array_init_cuda_app ${array_init_cuda_sources})
     target_include_directories(array_init_cuda_app PUBLIC ../include)
     set_target_properties(array_init_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
+    target_link_libraries(array_init_cuda_app Catch2WithMain )
 endif()
 
 if(CMAKE_HIP_COMPILER)
@@ -18,6 +19,7 @@ if(CMAKE_HIP_COMPILER)
     )
     add_executable(array_init_hip_app ${array_init_hip_sources})
     target_include_directories(array_init_hip_app PUBLIC ../include)
+    target_link_libraries(array_init_hip_app Catch2WithMain )
 endif()
  
 set(array_init_omp_sources
@@ -29,3 +31,4 @@ set(array_init_omp_sources
 
 add_executable(array_init_omp_app ${array_init_omp_sources})
 target_include_directories(array_init_omp_app PUBLIC ../include)
+target_link_libraries(array_init_omp_app Catch2WithMain )
