@@ -14,7 +14,7 @@ public:
     }
 
     void testRunStarting(Catch::TestRunInfo const& _testRunInfo ) override {
-        std::cout << "# Times (ns) for                   "  
+        std::cout << "# Times (ns) for                           "  
 		  << "estimate  iter  samples resamp clckRes  ovrhd "
 		  << " mean        std       m_lo       m_hi      "
 		  << " std_lo     std_hi    outVar  " << "\n";
@@ -22,7 +22,7 @@ public:
 
     void testCasePartialStarting(Catch::TestCaseInfo const& testInfo,
                                  uint64_t partNumber) override {
-        std::cout << std::setw(32) << testInfo.name << " ";
+        std::cout << std::setw(40) << testInfo.name << " ";
     }
 
     void benchmarkPreparing(Catch::StringRef stringRef ) override {

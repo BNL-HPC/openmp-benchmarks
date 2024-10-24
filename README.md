@@ -66,9 +66,9 @@ cmake --build build-clang15-frontier --parallel 16 --verbose
 
 ### BNL CSI HPC Dahlia
 
-/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -B build/ -S . -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCatch2_ROOT=/home/atif/openmp-benchmarks/Catch22
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -B build-dahlia/ -S . -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCatch2_ROOT=/home/atif/openmp-benchmarks/Catch22
 
-/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake --build build/ --parallel 16
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake --build build-dahlia/ --parallel 16
 
 ./build/saxpy/saxpy_omp_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inp-omp --benchmark-warmup-time 10 -r tabular
 

@@ -7,7 +7,8 @@
 #include <iostream>
 #include <hip/hip_runtime.h>
 #include <hip_bench.h>
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include <common.hpp>
 
 namespace hip_bench {
