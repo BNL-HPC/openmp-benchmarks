@@ -14,15 +14,14 @@
 
 namespace cuda_bench {
 
-template double* gemm_wrapper <double> ( const int, const int, const int);
-//template float*  sgemm_wrapper <float>  ( const int, const int, const int);
+//template double* cublas_wrapper <double> ( const int, const int, const int);
+template float*  cublas_wrapper <float>  ( const int, const int, const int);
 //template int*    sgemm_wrapper <int>    ( const int, const int, const int);
-
 
 
 // matrix multiplication C = alpha * A * B + beta * C
 template<typename T>
-__host__ T* gemm_wrapper ( const int M, const int N, const int K ) {
+__host__ T* cublas_wrapper ( const int M, const int N, const int K ) {
 
   cudaError_t cudaStat;  // cudaMalloc status
   cublasStatus_t stat;   // cuBLAS functions status
@@ -49,7 +48,6 @@ __host__ T* gemm_wrapper ( const int M, const int N, const int K ) {
 
   cudaMemcpy(d_A, h_A, M * K * sizeof(T), cudaMemcpyHostToDevice);
   cudaMemcpy(d_B, h_B, K * N * sizeof(T), cudaMemcpyHostToDevice);
-  //cudaMemcpy(d_c, c, m * n * sizeof(float), cudaMemcpyHostToDevice);  
 
   T alpha(1.0), beta(0.0);
 
@@ -57,8 +55,16 @@ __host__ T* gemm_wrapper ( const int M, const int N, const int K ) {
   cudaEventCreate(&start);
   cudaEventCreate(&stop);
   cudaEventRecord(start);
-  stat = cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
+  if (std::is_same <float, T>::value) { 
+    stat = cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
                      d_A, K, &beta, d_C, N);
+  } else if (std::is_same <double, T>::value) {
+    //stat = cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
+    //                 d_A, K, &beta, d_C, N);
+  } else {
+    std::cout << "Not double or float, aborting!" << std::endl;
+    std::abort();    
+  }
   cudaEventRecord(stop);
   cudaEventSynchronize(stop);
   float msecTotal(0.0f);

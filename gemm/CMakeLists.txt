@@ -11,6 +11,18 @@ if(CMAKE_CUDA_COMPILER)
     set_target_properties(cublas_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
 endif()
 
+if(CMAKE_CUDA_COMPILER)
+    set(gemm_cuda_sources
+      ../src/catch_main.cpp
+      gemm_test.cu
+      gemm.cu
+    )
+    add_executable(gemm_cuda_app ${gemm_cuda_sources})
+    target_include_directories(gemm_cuda_app PUBLIC ../include)
+    ##target_link_libraries(gemm_cuda_app -lcublas)
+    set_target_properties(gemm_cuda_app PROPERTIES CUDA_ARCHITECTURES "70;75;80;86")
+endif()
+
 #if(CMAKE_HIP_COMPILER)
 #    set(cublas_hip_sources
 #      ../src/catch_main.cpp

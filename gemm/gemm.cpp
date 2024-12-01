@@ -86,6 +86,23 @@ T* gemm_wrapper ( const std::size_t M, const std::size_t N, const std::size_t K 
        std::cout << "ERROR: copy C from gpu to cpu " << std::endl;
   }
 
+  // print matrix
+  auto print_matrix = [] (T* mat, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols; j++) {
+        std::cout << mat[i*cols + j] << " " ;
+      }
+      std::cout << std::endl;
+    }
+  };
+
+  std::cout << "A matrix is \n";
+  print_matrix (h_A, M, K) ;
+  std::cout << "B matrix is \n";
+  print_matrix (h_B, K, N) ;
+  std::cout << "C matrix is \n";
+  print_matrix (h_C, M, N) ;
+	  
   return h_A; 
 }
 
