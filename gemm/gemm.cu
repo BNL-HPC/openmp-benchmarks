@@ -8,13 +8,14 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_bench.cuh>
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include <common.hpp>
 
 namespace cuda_bench {
 
-template double* gemm_wrapper <double> ( const int, const int, const int);
-//template float*  sgemm_wrapper <float>  ( const int, const int, const int);
+template double* gemm_wrapper <double> ( const int, const int, const int, const int);
+template float*  gemm_wrapper <float>  ( const int, const int, const int, const int);
 //template int*    sgemm_wrapper <int>    ( const int, const int, const int);
 
 template<typename T>
@@ -30,8 +31,7 @@ __global__ void gemm_naive(int M, int N, int K, T alpha, const T *A,
       tmp += A[x * K + i] * B[i * N + y];
     }
     // C = α*(A@B)+β*C
-    C[x * N + y] = tmp;
-    //C[x * N + y] = alpha * tmp + beta * C[x * N + y];
+    C[x * N + y] = alpha * tmp + beta * C[x * N + y];
   }
 }
 
@@ -48,14 +48,14 @@ __global__ void gemm_global_mem_coalesce(int M, int N, int K, T alpha,
     for (int i = 0; i < K; ++i) {
       tmp += A[cRow * K + i] * B[i * N + cCol];
     }
-    C[cRow * N + cCol] = tmp;
-    //C[cRow * N + cCol] = alpha * tmp + beta * C[cRow * N + cCol];
+    C[cRow * N + cCol] = alpha * tmp + beta * C[cRow * N + cCol];
   }
 }
 
 // matrix multiplication C = alpha * A * B + beta * C
 template<typename T>
-__host__ T* gemm_wrapper ( const int M, const int N, const int K ) {
+__host__ T* gemm_wrapper ( const int M, const int N, const int K, const int blocksize) {
+
   cudaError_t cudaStat;  // cudaMalloc status
 
   T* h_A = (T*)malloc(sizeof(T) * M * K);
@@ -69,43 +69,48 @@ __host__ T* gemm_wrapper ( const int M, const int N, const int K ) {
 
   for (int i = 0; i < K*N; i++)
     h_B[i] = common::initialize_random ( epsilon );
+ 
+  for (int i = 0; i < M*N; i++)
+    h_C[i] = common::initialize_random ( epsilon );
+ 
+  BENCHMARK_ADVANCED("CUDA GEMM")(Catch::Benchmark::Chronometer meter) {
 
-  T *d_A, *d_B, *d_C;
-  cudaMalloc( (void**) &d_A, sizeof(T) * M * K);
-  cudaMalloc( (void**) &d_B, sizeof(T) * K * N);
-  cudaMalloc( (void**) &d_C, sizeof(T) * M * N);
+    T *d_A, *d_B, *d_C;
+    cudaMalloc( (void**) &d_A, sizeof(T) * M * K);
+    cudaMalloc( (void**) &d_B, sizeof(T) * K * N);
+    cudaMalloc( (void**) &d_C, sizeof(T) * M * N);
 
-  cudaMemcpy(d_A, h_A, M * K * sizeof(T), cudaMemcpyHostToDevice);
-  cudaMemcpy(d_B, h_B, K * N * sizeof(T), cudaMemcpyHostToDevice);
-  //cudaMemcpy(d_c, c, m * n * sizeof(float), cudaMemcpyHostToDevice);  
+    cudaMemcpy(d_A, h_A, M * K * sizeof(T), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_B, h_B, K * N * sizeof(T), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_C, h_C, M * N * sizeof(T), cudaMemcpyHostToDevice);  
 
-  T alpha(1.0), beta(0.0);
+    T alpha(1.0), beta(0.5);
 
-  cudaEvent_t start, stop;
-  cudaEventCreate(&start);
-  cudaEventCreate(&stop);
-  cudaEventRecord(start);
+    dim3 gridDim(M/blocksize+1, N/blocksize+1);
+    dim3 blockDim(blocksize, blocksize);
+    cudaEvent_t start, stop;
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start);
+    meter.measure( [N, M, K, &alpha, &beta, d_B, d_A, d_C, &gridDim, &blockDim] { 
+      gemm_naive<<<gridDim, blockDim >>> (M, N, K, alpha, d_A, d_B, beta, d_C);
+      //gemm_global_mem_coalesce <T, 32> <<<gridDim, blockDim >>> (M, N, K, alpha, d_A, d_B, beta, d_C);
+      cudaDeviceSynchronize() ;
+    });
+    cudaEventRecord(stop);
+    cudaEventSynchronize(stop);
+    float msecTotal(0.0f);
+    cudaEventElapsedTime(&msecTotal, start, stop);
 
-  dim3 gridDim(M/32+1, N/32+1);
-  dim3 blockDim(32, 32);
-  gemm_naive<<<gridDim, blockDim >>> (M, N, K, alpha, d_A, d_B, beta, d_C);
-  //gemm_global_mem_coalesce <T, 32> <<<gridDim, blockDim >>> (M, N, K, alpha, d_A, d_B, beta, d_C);
-  //stat = cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
-  //                   d_A, K, &beta, d_C, N);
+    cudaMemcpy(h_C, d_C, M * N * sizeof(T), cudaMemcpyDeviceToHost);
+    //printf ("CUDA Naive performance : time = (%7.6f) ns, GFLOPs/sec = %.4f, %f \n ", msecTotal*1000000, 
+    //      	  2*M*N*K*1.0e-9/(msecTotal/1000.0), h_C[0] );
 
-  cudaEventRecord(stop);
-  cudaEventSynchronize(stop);
-  float msecTotal(0.0f);
-  cudaEventElapsedTime(&msecTotal, start, stop);
-
-  printf ("CUDA Naive performance : time = %.3f, GFLOPs/sec = %.4f ", msecTotal, 
-		  2*M*N*K*1.0e-9/(msecTotal/1000.0) );
-
-  cudaMemcpy(h_C, d_C, M * N * sizeof(T), cudaMemcpyDeviceToHost);
-
-  cudaFree(d_A);
-  cudaFree(d_B);
-  cudaFree(d_C);
+    // TODO: add asserts, checks
+    cudaFree(d_A);
+    cudaFree(d_B);
+    cudaFree(d_C);
+  };
   free(h_A);
   free(h_B);
   free(h_C);

@@ -1,22 +1,20 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_bench.cuh>
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace cuda_bench {
 
 /*******************/	
-/* Array size 2^12 */
+/* Array size 2^10 */
 /*******************/	
+#define N 1024
 
-TEST_CASE("CUDA GEMM 4x4x4"){
-
-  const int M = 512; 
-  const int N = 512; 
-  const int K = 512; 
-  double* temp1 = gemm_wrapper <double> (M, N, K);  
-  //float*  temp2 = reduction_wrapper <float>  ( M, N, K );  
-  //int*    temp3 = reduction_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 32
+TEST_CASE("CUDA GEMM 1024x1024x1024 32 double"){ double* temp1 = gemm_wrapper <double> (N, N, N, blocksize); }
+TEST_CASE("CUDA GEMM 1024x1024x1024 32 float" ){ float*  temp1 = gemm_wrapper <float>  (N, N, N, blocksize); }
+//TEST_CASE("CUDA GEMM 8192x8192x8192 double"){ double* temp1 = gemm_wrapper <double> (N, N, N); }
+//TEST_CASE("CUDA GEMM 8192x8192x8192 float" ){ float*  temp1 = gemm_wrapper <float>  (N, N, N); }
+#undef blocksize
 
 } // namespace cuda_bench

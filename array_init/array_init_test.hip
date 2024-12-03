@@ -1,4 +1,4 @@
-#include <catch.hpp> 
+#include <catch2/catch_test_macros.hpp>
 #include <hip/hip_runtime.h>
 #include <hip_bench.h>
 #include <iostream>
@@ -8,101 +8,94 @@ namespace hip_bench {
 /*******************/	
 /* Array size 2^12 */
 /*******************/	
+#define N 1024*4
 
-TEST_CASE("HIP Init Array to 0 2^12 128"){
+#define blocksize 128
+TEST_CASE("HIP ArrayInit 2^12 128 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 128 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 128 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096, 128); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096, 128); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096, 128); // N, blocksize 
-}
+#define blocksize 256
+TEST_CASE("HIP ArrayInit 2^12 256 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 256 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 256 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^12 256"){
+#define blocksize 512
+TEST_CASE("HIP ArrayInit 2^12 512 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 512 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 512 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096, 256); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096, 256); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096, 256); // N, blocksize 
-}
+#define blocksize 1024
+TEST_CASE("HIP ArrayInit 2^12 1024 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 1024 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^12 1024 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^12 512"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096, 512); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096, 512); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096, 512); // N, blocksize 
-}
-
-TEST_CASE("HIP Init Array to 0 2^12 1024"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096, 1024); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096, 1024); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096, 1024); // N, blocksize 
-}
-
+#undef N
 
 /*******************/	
 /* Array size 2^18 */
 /*******************/	
+#define N 1024*512
 
-TEST_CASE("HIP Init Array to 0 2^18 128"){
+#define blocksize 128
+TEST_CASE("HIP ArrayInit 2^18 128 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 128 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 128 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*64, 128); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*64, 128); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*64, 128); // N, blocksize 
-}
+#define blocksize 256
+TEST_CASE("HIP ArrayInit 2^18 256 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 256 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 256 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^18 256"){
+#define blocksize 512
+TEST_CASE("HIP ArrayInit 2^18 512 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 512 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 512 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*64, 256); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*64, 256); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*64, 256); // N, blocksize 
-}
+#define blocksize 1024
+TEST_CASE("HIP ArrayInit 2^18 1024 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 1024 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^18 1024 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^18 512"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*64, 512); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*64, 512); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*64, 512); // N, blocksize 
-}
-
-TEST_CASE("HIP Init Array to 0 2^18 1024"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*64, 1024); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*64, 1024); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*64, 1024); // N, blocksize 
-}
-
+#undef N
 
 /*******************/	
 /* Array size 2^24 */
 /*******************/	
+#define N 1024*1024*16
 
-TEST_CASE("HIP Init Array to 0 2^24 128"){
+#define blocksize 128
+TEST_CASE("HIP ArrayInit 2^24 128 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 128 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 128 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*4096, 128); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*4096, 128); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*4096, 128); // N, blocksize 
-}
+#define blocksize 256
+TEST_CASE("HIP ArrayInit 2^24 256 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 256 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 256 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^24 256"){
+#define blocksize 512
+TEST_CASE("HIP ArrayInit 2^24 512 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 512 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 512 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*4096, 256); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*4096, 256); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*4096, 256); // N, blocksize 
-}
+#define blocksize 1024
+TEST_CASE("HIP ArrayInit 2^24 1024 double ") { double* temp1 = set_to_zero_wrapper <double> ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 1024 float  ") { float*  temp2 = set_to_zero_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("HIP ArrayInit 2^24 1024 int    ") { int*    temp3 = set_to_zero_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("HIP Init Array to 0 2^24 512"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*4096, 512); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*4096, 512); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*4096, 512); // N, blocksize 
-}
-
-TEST_CASE("HIP Init Array to 0 2^24 1024"){
-
-  double* temp1 = set_to_zero_wrapper <double> ( 4096*4096, 1024); // N, blocksize 
-  float*  temp2 = set_to_zero_wrapper <float>  ( 4096*4096, 1024); // N, blocksize 
-  int*    temp3 = set_to_zero_wrapper <int>    ( 4096*4096, 1024); // N, blocksize 
-}
-
-
+#undef N
 
 } // namespace hip_bench

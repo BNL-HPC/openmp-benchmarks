@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <hip/hip_runtime.h>
-#include <catch.hpp>
 
 namespace hip_bench {
 

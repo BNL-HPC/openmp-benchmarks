@@ -29,7 +29,7 @@ template <typename T>
 T* reduction_wrapper ( const std::size_t N, const std::size_t blocksize );
 
 template <typename T>
-T* gemm_wrapper ( const std::size_t M, const std::size_t N, const std::size_t K );
+T* gemm_wrapper ( const std::size_t M, const std::size_t N, const std::size_t K, const std::size_t blocksize );
 
 
 } // namespace openmp_bench
