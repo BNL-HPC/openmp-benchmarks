@@ -8,7 +8,8 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #include <cuda_bench.cuh>
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
 #include <common.hpp>
 
 namespace cuda_bench {

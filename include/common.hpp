@@ -1,12 +1,14 @@
 #pragma once
 
 #include <iostream>
+#include <cstdlib> 
+#include <ctime> 
 
 namespace common {
 
 template <typename T>                                                
 T initialize_random ( T epsilon ) {                                  
-                                                                     
+
   if (std::is_same <float, T>::value) {                              
     return 2.0 * (rand() / static_cast <T> (RAND_MAX)) - 1.0;        
   }                                                                  

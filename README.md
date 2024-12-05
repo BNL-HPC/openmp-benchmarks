@@ -2,7 +2,46 @@
 
 ## Build instructions for various machines
 
-Currently for OpenMP target offload we need to edit the flag --offload-arch in CMakeLists.txt according to the targeted GPU architecture
+Currently for OpenMP target offload we need to edit the flag --offload-arch in CMakeLists.txt or supply it in CMAKE_CXX_FLAGS
+ according to the targeted GPU architecture
+
+After upgrading to Catch2 v3.x, specify path to Catch2 via -DCatch_Root=/path/to/Catch2, otherwise CMake will add it as a dependency
+
+### NERSC Perlmutter
+
+Set --offload-arch=sm_80 for A100 
+
+module load llvm/16 cudatoolkit/11.7 cmake/3.24.3
+
+cmake -S . -B build-clang16-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="--offload-arch=sm_80 -O3 -mtune=native -L/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/lib64 -lcudart -lcudart_static -ldl -lrt -pthreads"
+
+cmake --build build-clang16-perlmutter --parallel 16 --verbose
+
+### OLCF Frontier
+
+Set --offload-arch=gfx90a for Mi250X
+
+module load rocm/5.4.3 cmake craype-accel-amd-gfx90a
+
+cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native --offload-arch=gfx90a " -DCMAKE_PREFIX_PATH=""
+
+cmake --build build-clang15-frontier --parallel 16 --verbose
+
+### BNL CSI HPC Dahlia
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -B build-dahlia/ -S . -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCatch2_ROOT=/home/atif/openmp-benchmarks/Catch22 -DCMAKE_CXX_FLAGS="--offload-arch=sm_86"
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake --build build-dahlia/ --parallel 16
+
+./build-dahlia/saxpy/saxpy_omp_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inp-omp --benchmark-warmup-time 10 -r tabular
+
+### BNL CSI HPC Peony
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake -B build-peony/ -S . -DCatch2_ROOT=/home/atif/openmp-benchmarks/Catch22 -DCMAKE_CXX_FLAGS="--offload-arch=gfx90a"
+
+/home/atif/packages/cmake-3.30.0-rc2-linux-x86_64/bin/cmake --build build-peony/ --parallel 16
+
+./build-peony/saxpy/saxpy_omp_app --benchmark-samples 1000 --benchmark-resamples 100 --benchmark-confidence-interval 0.95 --input-file inp-omp --benchmark-warmup-time 10 -r tabular
 
 ### BNL Institutional Cluster
 
@@ -38,29 +77,10 @@ export PATH=/work/software/wc/llvm-16-test/bin/:$PATH
 
 export LD_LIBRARY_PATH=/work/software/wc/llvm-16-test/lib/:$LD_LIBRARY_PATH
 
-/work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 -mtune=native" -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_PREFIX_PATH=""
+/work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake -S . -B build -DCMAKE_INSTALL_PREFIX=install -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O3 --offload-arch=sm_86 -mtune=native" -DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc -DCMAKE_PREFIX_PATH=""
 
 /work/atif/packages/cmake-3.25.0-linux-x86_64/bin/cmake --build build --parallel 8
 
-### NERSC Perlmutter
-
-Set --offload-arch=sm_80 for A100 
-
-module load llvm/16 cudatoolkit/11.7 cmake/3.24.3
-
-cmake -S . -B build-clang16-perlmutter -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native -L/opt/nvidia/hpc_sdk/Linux_x86_64/22.7/cuda/11.7/lib64 -lcudart -lcudart_static -ldl -lrt -pthreads"
-
-cmake --build build-clang16-perlmutter --parallel 16 --verbose
-
-### OLCF Frontier
-
-Set --offload-arch=gfx90a for Mi250X
-
-module load rocm/5.4.3 cmake craype-accel-amd-gfx90a
-
-cmake -S . -B build-clang15-frontier -DCMAKE_C_COMPILER=amdclang -DCMAKE_CXX_COMPILER=amdclang++ -DCMAKE_CXX_FLAGS="-O3 -mtune=native " -DCMAKE_PREFIX_PATH=""
-
-cmake --build build-clang15-frontier --parallel 16 --verbose
 
 ## Running a microbenchmark
 

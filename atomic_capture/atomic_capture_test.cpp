@@ -1,171 +1,100 @@
 #include <openmp_bench.h>
-#include <catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <omp.h>
 
 namespace openmp_bench {
 
 /*******************/	
-/* Array size 2^16 */
+/* Array size 2^12 */
 /*******************/	
+#define N 1024*4
 
-TEST_CASE("OpenMP Atomic Capture 2^16 128"){
+#define blocksize 128
+TEST_CASE("OpenMP AtomicCapture 2^12 128 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 128 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 128 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*16; 
-  const std::size_t blocksize = 128;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 256
+TEST_CASE("OpenMP AtomicCapture 2^12 256 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 256 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 256 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^16 256"){
+#define blocksize 512
+TEST_CASE("OpenMP AtomicCapture 2^12 512 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 512 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 512 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*16; 
-  const std::size_t blocksize = 256;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 1024
+TEST_CASE("OpenMP AtomicCapture 2^12 1024 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 1024 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^12 1024 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^16 512"){
-
-  const std::size_t N = 4096*16; 
-  const std::size_t blocksize = 512;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^16 1024"){
-
-  const std::size_t N = 4096*16; 
-  const std::size_t blocksize = 1024;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#undef N
 
 /*******************/	
-/* Array size 2^20 */
+/* Array size 2^18 */
 /*******************/	
+#define N 1024*512
 
-TEST_CASE("OpenMP Atomic Capture 2^20 128"){
+#define blocksize 128
+TEST_CASE("OpenMP AtomicCapture 2^18 128 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 128 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 128 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*256; 
-  const std::size_t blocksize = 128;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 256
+TEST_CASE("OpenMP AtomicCapture 2^18 256 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 256 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 256 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^20 256"){
+#define blocksize 512
+TEST_CASE("OpenMP AtomicCapture 2^18 512 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 512 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 512 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*256; 
-  const std::size_t blocksize = 256;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 1024
+TEST_CASE("OpenMP AtomicCapture 2^18 1024 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 1024 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^18 1024 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^20 512"){
-
-  const std::size_t N = 4096*256; 
-  const std::size_t blocksize = 512;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^20 1024"){
-
-  const std::size_t N = 4096*256; 
-  const std::size_t blocksize = 1024;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#undef N
 
 /*******************/	
 /* Array size 2^24 */
 /*******************/	
+#define N 1024*1024*16
 
-TEST_CASE("OpenMP Atomic Capture 2^24 128"){
+#define blocksize 128
+TEST_CASE("OpenMP AtomicCapture 2^24 128 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 128 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 128 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*4096; 
-  const std::size_t blocksize = 128;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 256
+TEST_CASE("OpenMP AtomicCapture 2^24 256 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 256 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 256 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^24 256"){
+#define blocksize 512
+TEST_CASE("OpenMP AtomicCapture 2^24 512 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 512 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 512 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-  const std::size_t N = 4096*4096; 
-  const std::size_t blocksize = 256;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
+#define blocksize 1024
+TEST_CASE("OpenMP AtomicCapture 2^24 1024 double ") { double* temp1 = atomic_capture_wrapper <double> ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 1024 float  ") { float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize ); }
+TEST_CASE("OpenMP AtomicCapture 2^24 1024 int    ") { int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize ); }
+#undef blocksize
 
-TEST_CASE("OpenMP Atomic Capture 2^24 512"){
-
-  const std::size_t N = 4096*4096; 
-  const std::size_t blocksize = 512;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^24 1024"){
-
-  const std::size_t N = 4096*4096; 
-  const std::size_t blocksize = 1024;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-/*******************/	
-/* Array size 2^28 */
-/*******************/	
-
-TEST_CASE("OpenMP Atomic Capture 2^28 128"){
-
-  const std::size_t N = 4096*4096*16; 
-  const std::size_t blocksize = 128;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^28 256"){
-
-  const std::size_t N = 4096*4096*16; 
-  const std::size_t blocksize = 256;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^28 512"){
-
-  const std::size_t N = 4096*4096*16; 
-  const std::size_t blocksize = 512;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-TEST_CASE("OpenMP Atomic Capture 2^28 1024"){
-
-  const std::size_t N = 4096*4096*16; 
-  const std::size_t blocksize = 1024;
-  double* temp1 = atomic_capture_wrapper <double> ( N, blocksize );  
-  float*  temp2 = atomic_capture_wrapper <float>  ( N, blocksize );  
-  int*    temp3 = atomic_capture_wrapper <int>    ( N, blocksize );  
-}
-
-
-
-
+#undef N
 
 } //namespace openmp_bench

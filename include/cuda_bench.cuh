@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <cuda.h>
-#include <catch.hpp>
 
 namespace cuda_bench {
 
@@ -27,6 +26,14 @@ __host__ T* saxpy_wrapper ( const int N, const int blocksize);
 template <typename T>
 __host__ T* reduction_wrapper ( const int N, const int blocksize);
 
+template <typename T>
+__host__ T* cublas_wrapper_d ( const int M, const int N, const int K);
+
+template <typename T>
+__host__ T*  cublas_wrapper_f ( const int M, const int N, const int K);
+
+template <typename T>
+__host__ T* gemm_wrapper ( const int M, const int N, const int K, const int blocksize);
 
 
 } // namespace cuda_bench
