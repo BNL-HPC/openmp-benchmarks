@@ -12,6 +12,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/benchmark/catch_benchmark.hpp>
 #include <common.hpp>
+#include <chrono>
 
 namespace cuda_bench {
 
@@ -33,6 +34,8 @@ __host__ T* cublas_wrapper_f ( const int M, const int N, const int K ) {
   
   srand(time(0));
   T epsilon = common::get_epsilon <T> ();
+
+  BENCHMARK_ADVANCED("cuBLAS SGEMM")(Catch::Benchmark::Chronometer meter) {
   for (int i = 0; i < M*K; i++)
     h_A[i] = common::initialize_random ( epsilon );
 
@@ -42,7 +45,6 @@ __host__ T* cublas_wrapper_f ( const int M, const int N, const int K ) {
   for (int i = 0; i < M*N; i++)
     h_C[i] = common::initialize_random ( epsilon );
  
-  BENCHMARK_ADVANCED("cuBLAS SGEMM")(Catch::Benchmark::Chronometer meter) {
 
     T *d_A, *d_B, *d_C;
     cudaMalloc( (void**) &d_A, sizeof(T) * M * K);
@@ -58,24 +60,19 @@ __host__ T* cublas_wrapper_f ( const int M, const int N, const int K ) {
 
     T alpha(1.0), beta(0.5);
 
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start);
+    auto start = std::chrono::steady_clock::now() ;
     meter.measure( [handle, N, M, K, &alpha, &beta, d_B, d_A, d_C] { 
     cublasSgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
                      d_A, K, &beta, d_C, N); 
     cudaDeviceSynchronize() ;
     });
-    cudaEventRecord(stop);
-    cudaEventSynchronize(stop);
-    float msecTotal(0.0f);
-    cudaEventElapsedTime(&msecTotal, start, stop);
+    std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
+    double msecTotal = elapsed_seconds.count();
     cudaMemcpy(h_C, d_C, M * N * sizeof(T), cudaMemcpyDeviceToHost);
 
     double Gflops = 2.0 * M * N * K * 1e-9;
-    double avg_time = msecTotal*1000000.0;
-    //printf("Average elapsed time: (%7.6f) ns %f, %f, %f \n", avg_time, h_A[0], h_B[0], h_C[0]);
+    double avg_time = msecTotal*1000000000.0/meter.runs();
+    printf("Average elapsed time: %d (%7.6f) ns %f, %f, %f \n", meter.runs(), avg_time, h_A[0], h_B[0], h_C[0]);
     //printf("Gflops = %f \n", Gflops);
     //printf("%f GFLOPs/s \n", Gflops/avg_time);
 
@@ -105,6 +102,8 @@ __host__ T* cublas_wrapper_d ( const int M, const int N, const int K ) {
   
   srand(time(0));
   T epsilon = common::get_epsilon <T> ();
+  
+  BENCHMARK_ADVANCED("cuBLAS SGEMM")(Catch::Benchmark::Chronometer meter) {
   for (int i = 0; i < M*K; i++)
     h_A[i] = common::initialize_random ( epsilon );
 
@@ -114,7 +113,6 @@ __host__ T* cublas_wrapper_d ( const int M, const int N, const int K ) {
   for (int i = 0; i < M*N; i++)
     h_C[i] = common::initialize_random ( epsilon );
  
-  BENCHMARK_ADVANCED("cuBLAS SGEMM")(Catch::Benchmark::Chronometer meter) {
 
     T *d_A, *d_B, *d_C;
     cudaMalloc( (void**) &d_A, sizeof(T) * M * K);
@@ -129,24 +127,19 @@ __host__ T* cublas_wrapper_d ( const int M, const int N, const int K ) {
 
     T alpha(1.0), beta(0.5);
 
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start);
+    auto start = std::chrono::steady_clock::now() ;
     meter.measure( [handle, N, M, K, &alpha, &beta, d_B, d_A, d_C] { 
     cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, N, M, K, &alpha, d_B, N,
                      d_A, K, &beta, d_C, N); 
     cudaDeviceSynchronize() ;
     });
-    cudaEventRecord(stop);
-    cudaEventSynchronize(stop);
-    float msecTotal(0.0f);
-    cudaEventElapsedTime(&msecTotal, start, stop);
+    std::chrono::duration<double> elapsed_seconds = std::chrono::steady_clock::now() - start;
+    double msecTotal = elapsed_seconds.count();
     cudaMemcpy(h_C, d_C, M * N * sizeof(T), cudaMemcpyDeviceToHost);
 
     double Gflops = 2.0 * M * N * K * 1e-9;
-    double avg_time = msecTotal*1000000.0;
-    //printf("Average elapsed time: (%7.6f) ns %f, %f, %f \n", avg_time, h_A[0], h_B[0], h_C[0]);
+    double avg_time = msecTotal*1000000000.0/meter.runs();
+    printf("Average elapsed time: %d (%7.6f) ns %f, %f, %f \n", meter.runs(), avg_time, h_A[0], h_B[0], h_C[0]);
     //printf("Gflops = %f \n", Gflops);
     //printf("%f GFLOPs/s \n", Gflops/avg_time);
 

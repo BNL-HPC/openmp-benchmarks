@@ -55,12 +55,6 @@ TEST_CASE("cuBLAS GEMM 4096x4096x4096 float" ){ float*  temp1 = cublas_wrapper_f
 
 #undef N
 
-
-
-
-
-
-
 /*******************/	
 /* Array size 2^13 */
 /*******************/	
